@@ -1,14 +1,15 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import { UserContext } from '../context/userContext'; // Adjusted import for consistency
+import FacebookLogin from 'react-facebook-login';
+import { UserContext } from '../context/userContext';
 import { useNavigate } from 'react-router-dom';
-import './SignIn.css'; // Import custom styles
+import './SignIn.css';
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { setUser } = useContext(UserContext);
-    const navigate = useNavigate(); // Changed to useNavigate hook
+    const navigate = useNavigate();
     const [error, setError] = useState('');
 
     const handleSignIn = async (e) => {
@@ -17,46 +18,74 @@ const SignIn = () => {
 
         try {
             const response = await axios.post('http://localhost:5000/api/users/signin', { email, password });
-            setUser(response.data.user); // Set user information in context
-            navigate('/'); // Redirect to home page
+            setUser(response.data.user);
+            navigate('/');
         } catch (error) {
             console.error('Error signing in:', error);
             setError('Failed to sign in. Please check your credentials.'); // Set error message
         }
     };
 
+    const responseFacebook = async (response) => {
+        if (response.accessToken) {
+            try {
+                const res = await axios.post('http://localhost:5000/api/users/auth/facebook', {
+                    accessToken: response.accessToken
+                });
+                setUser(res.data.user);
+                navigate('/');
+            } catch (error) {
+                console.error('Error during Facebook authentication:', error);
+                setError('Failed to authenticate with Facebook.');
+            }
+        } else {
+            console.error('Failed to obtain access token from Facebook');
+            setError('Could not log in with Facebook');
+        }
+    };
+
     return (
-        <div className="sign-in-container">
-            <h1 className="text-center mb-4">Sign In</h1>
-            <form onSubmit={handleSignIn} className="sign-in-form">
-                <div className="mb-3">
-                    <input
-                        type="email"
-                        className="form-control"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email"
-                        required
-                    />
-                </div>
-                <div className="mb-3">
-                    <input
-                        type="password"
-                        className="form-control"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Password"
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn btn-danger w-100">
-                    Sign In
-                </button>
-                {error && <p className="text-warning mt-2">{error}</p>}
-            </form>
-            <p className="mt-3">
-                Don't have an account? <a href="/frontend/src/pages/SignUp" className="text-danger">Sign Up</a>
-            </p>
+        <div className="sign-in-wrapper">
+            <div className="sign-in-container">
+                <h1 className="text-center mb-4">Sign In</h1>
+                <form onSubmit={handleSignIn} className="sign-in-form">
+                    <div className="mb-3">
+                        <input
+                            type="email"
+                            className="form-control"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Email"
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <input
+                            type="password"
+                            className="form-control"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Password"
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-danger w-100">
+                        Sign In
+                    </button>
+                    {error && <p className="text-warning mt-2">{error}</p>}
+                </form>
+                <FacebookLogin
+                    appId="1957293021457370"
+                    autoLoad={false}
+                    fields="name,email,picture"
+                    callback={responseFacebook}
+                    cssClass="btn btn-primary w-100 mt-3"
+                    textButton="Login with Facebook"
+                />
+                <p className="mt-3">
+                    Don't have an account? <a href="/signup" className="text-danger">Sign Up</a>
+                </p>
+            </div>
         </div>
     );
 };

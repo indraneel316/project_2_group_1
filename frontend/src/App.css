@@ -24,6 +24,11 @@
   color: white;
 }
 
+body {
+  background-image: url('https://papers.co/wallpaper/papers.co-ai16-pepper-red-hot-food-art-35-3840x2160-4k-wallpaper.jpg');
+
+}
+
 .App-link {
   color: #61dafb;
 }

@@ -4,8 +4,10 @@ import multer from 'multer';
 import { uploadToS3 } from '../config/s3Config.js';
 import User from '../model/User.js';
 import bcrypt from 'bcryptjs';
-import { S3 } from '@aws-sdk/client-s3'; // Import the S3 client from AWS SDK v3
+import { S3 } from '@aws-sdk/client-s3';
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+import axios from 'axios'; // Import axios to make HTTP requests
 
 dotenv.config();
 
@@ -106,6 +108,52 @@ router.post('/upload-profile-picture', upload.single('profilePicture'), async (r
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+});
+
+// Facebook Login Route - receives access token from frontend
+router.post('/auth/facebook', async (req, res) => {
+    const { accessToken } = req.body; // Get access token from request body
+
+    try {
+        // Verify the access token with Facebook
+        const userData = await axios.get(`https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${accessToken}`);
+
+        const { id, name, email, picture } = userData.data;
+
+        // Check if user already exists in your database using email
+        let user = await User.findOne({ email });
+        if (!user) {
+            // Create a new user if they don't exist
+            const defaultPassword = Math.random().toString(36).slice(-8); // Generate a random password
+            const hashedPassword = await bcrypt.hash(defaultPassword, 10); // Hash the password
+
+            user = new User({
+                // Optional: Store the Facebook ID if you want to reference it later
+                username: name,
+                email: email,
+                password: hashedPassword, // Set the hashed password
+                profilePicture: picture.data.url
+            });
+            await user.save();
+        }
+
+        // Create JWT token
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.status(200).json({
+            message: 'Login successful',
+            token,
+            user: {
+                id: user._id,
+                email: user.email,
+                username: user.username,
+                profilePicture: user.profilePicture
+            }
+        });
+    } catch (error) {
+        console.error('Error verifying access token:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 

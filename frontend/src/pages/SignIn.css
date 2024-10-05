@@ -8,50 +8,76 @@ body {
     margin: 0;
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* Align items at the start (left) */
-    padding-right: 20px; /* Adjusted padding for a little space from the right */
+    justify-content: center; /* Center the form */
+    padding-right: 20px; /* Keep a little padding from the right */
 }
 
-.sign-in-container {
+.sign-in-container, .sign-up-container {
     background-color: #444;
     width: 450px; /* Set width */
+    max-width: 90%; /* Ensure it doesn't exceed screen width on small screens */
     padding: 50px; /* Padding */
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     color: white;
+    margin-left: 1500px; /* Shift the card a little to the right */
 }
 
-.sign-in-form .form-control {
+.sign-in-form .form-control,
+.sign-up-form .form-control {
     background-color: #333;
     border: 1px solid #999;
     color: white;
     transition: border 0.3s, background-color 0.3s;
 }
 
-.sign-in-form .form-control:focus {
+.sign-in-form .form-control:focus,
+.sign-up-form .form-control:focus {
     background-color: #555;
     border-color: #e74c3c;
     color: white;
 }
 
-.sign-in-form .btn-danger {
+.sign-in-form .btn-danger,
+.sign-up-form .btn-danger {
     background-color: #e74c3c;
     border: none;
+    width: 100%; /* Ensure button spans the full width */
+    padding: 10px; /* Add some padding for a larger clickable area */
+    margin-top: 15px; /* Add margin for better spacing */
 }
 
-.sign-in-form .btn-danger:hover {
+.sign-in-form .btn-danger:hover,
+.sign-up-form .btn-danger:hover {
     background-color: white;
     color: #e74c3c;
+    transition: background-color 0.3s ease; /* Smooth hover transition */
 }
 
-.sign-in-form a {
+.sign-in-form a,
+.sign-up-form a {
     color: #e74c3c;
 }
 
-.sign-in-form a:hover {
+.sign-in-form a:hover,
+.sign-up-form a:hover {
     text-decoration: underline;
 }
 
 .text-warning {
     color: #ffcc00;
+}
+
+/* Media Queries for Smaller Screens */
+@media (max-width: 768px) {
+    .sign-in-container,
+    .sign-up-container {
+        padding: 30px; /* Reduce padding on smaller screens */
+        width: 100%; /* Ensure the form is responsive */
+    }
+
+    .sign-in-form .btn-danger,
+    .sign-up-form .btn-danger {
+        padding: 12px; /* Increase button padding for better touch interaction */
+    }
 }

@@ -9,7 +9,7 @@ import SignUp from './pages/SignUp';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
-    const location = useLocation(); // Get the current location
+    const location = useLocation();
 
     return (
         <>
