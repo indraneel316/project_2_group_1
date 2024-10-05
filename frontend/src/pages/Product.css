@@ -1,0 +1,29 @@
+body {
+    background-color: black; /* Set the background of the whole page to black */
+}
+
+.card {
+    background-color: red; /* Set card background to red */
+    border: none; /* Remove card border */
+}
+
+.card-title {
+    color: white; /* Ensure card title text is white */
+}
+
+.card-text {
+    color: white; /* Ensure card description text is white */
+}
+
+.consistent-img {
+    height: 200px; /* Set a fixed height for images */
+    object-fit: cover; /* Maintain aspect ratio and fill the space */
+    width: 100%; /* Ensure the image takes full width */
+}
+
+/* Flexbox for equal height cards */
+.card-body {
+    display: flex; /* Make the body a flex container */
+    flex-direction: column; /* Arrange items in a column */
+    flex-grow: 1; /* Allow the body to grow to fill the card */
+}

@@ -1,0 +1,57 @@
+body {
+    background-image: url('https://papers.co/wallpaper/papers.co-ai16-pepper-red-hot-food-art-35-3840x2160-4k-wallpaper.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #333;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align items at the start (left) */
+    padding-right: 20px; /* Adjusted padding for a little space from the right */
+}
+
+.sign-in-container {
+    background-color: #444;
+    width: 450px; /* Set width */
+    padding: 50px; /* Padding */
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
+.sign-in-form .form-control {
+    background-color: #333;
+    border: 1px solid #999;
+    color: white;
+    transition: border 0.3s, background-color 0.3s;
+}
+
+.sign-in-form .form-control:focus {
+    background-color: #555;
+    border-color: #e74c3c;
+    color: white;
+}
+
+.sign-in-form .btn-danger {
+    background-color: #e74c3c;
+    border: none;
+}
+
+.sign-in-form .btn-danger:hover {
+    background-color: white;
+    color: #e74c3c;
+}
+
+.sign-in-form a {
+    color: #e74c3c;
+}
+
+.sign-in-form a:hover {
+    text-decoration: underline;
+}
+
+.text-warning {
+    color: #ffcc00;
+}
