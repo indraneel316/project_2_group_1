@@ -7,20 +7,21 @@ body {
     height: 100vh;
     margin: 0;
     display: flex;
+    max-width: 100%;
     align-items: center;
-    justify-content: center; /* Center the form */
-    padding-right: 20px; /* Keep a little padding from the right */
+    justify-content: center;
+    padding-right: 20px;
 }
 
 .sign-in-container, .sign-up-container {
     background-color: #444;
-    width: 450px; /* Set width */
-    max-width: 90%; /* Ensure it doesn't exceed screen width on small screens */
-    padding: 50px; /* Padding */
+    width: 450px;
+    max-width: 90%;
+    padding: 50px;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     color: white;
-    margin-left: 1500px; /* Shift the card a little to the right */
+    margin-left: 1500px;
 }
 
 .sign-in-form .form-control,
@@ -42,9 +43,9 @@ body {
 .sign-up-form .btn-danger {
     background-color: #e74c3c;
     border: none;
-    width: 100%; /* Ensure button spans the full width */
-    padding: 10px; /* Add some padding for a larger clickable area */
-    margin-top: 15px; /* Add margin for better spacing */
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
 }
 
 .sign-in-form .btn-danger:hover,
@@ -68,16 +69,15 @@ body {
     color: #ffcc00;
 }
 
-/* Media Queries for Smaller Screens */
 @media (max-width: 768px) {
     .sign-in-container,
     .sign-up-container {
-        padding: 30px; /* Reduce padding on smaller screens */
-        width: 100%; /* Ensure the form is responsive */
+        padding: 30px;
+        width: 100%;
     }
 
     .sign-in-form .btn-danger,
     .sign-up-form .btn-danger {
-        padding: 12px; /* Increase button padding for better touch interaction */
+        padding: 12px;
     }
 }

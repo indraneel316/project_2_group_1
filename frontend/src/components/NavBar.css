@@ -45,3 +45,14 @@
 .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,..."); /* Optional: customize icon */
 }
+.navbar {
+    padding: 0.5rem 1rem; /* Adjust padding if necessary */
+}
+
+.navbar-brand {
+    font-size: 1.5rem; /* Adjust brand font size if necessary */
+}
+
+.navbar-nav .nav-link {
+    padding: 0.5rem 1rem; /* Adjust link padding if necessary */
+}
