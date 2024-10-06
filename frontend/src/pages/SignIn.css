@@ -7,9 +7,9 @@ body {
     height: 100vh;
     margin: 0;
     display: flex;
-    justify-content: flex-end; /* Align to the right */
-    align-items: center; /* Center vertically */
-    padding-right: 20px; /* Right padding */
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 20px;
 }
 
 .sign-in-container, .sign-up-container {

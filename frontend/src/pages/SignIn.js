@@ -18,6 +18,11 @@ const SignIn = () => {
 
         try {
             const response = await axios.post('http://localhost:5000/api/users/signin', { email, password });
+
+            // Store token in sessionStorage
+            sessionStorage.setItem('authToken', response.data.token);
+
+            // Update user context with the signed-in user data
             setUser(response.data.user);
             navigate('/');
         } catch (error) {
@@ -32,6 +37,11 @@ const SignIn = () => {
                 const res = await axios.post('http://localhost:5000/api/users/auth/facebook', {
                     accessToken: response.accessToken
                 });
+
+                // Store token in sessionStorage
+                sessionStorage.setItem('authToken', res.data.token);
+
+                // Update user context with Facebook user data
                 setUser(res.data.user);
                 navigate('/');
             } catch (error) {

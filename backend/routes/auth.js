@@ -1,4 +1,3 @@
-// routes/userRoutes.js
 import express from 'express';
 import multer from 'multer';
 import { uploadToS3 } from '../config/s3Config.js';
@@ -7,13 +6,16 @@ import bcrypt from 'bcryptjs';
 import { S3 } from '@aws-sdk/client-s3';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-import axios from 'axios'; // Import axios to make HTTP requests
+import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
+import authenticateToken from '../middleware/authenticateToken.js'; // JWT Middleware
+
+
 
 dotenv.config();
 
 const router = express.Router();
 
-// Create an S3 instance
 const s3 = new S3({
     region: process.env.AWS_REGION,
     credentials: {
@@ -22,7 +24,6 @@ const s3 = new S3({
     },
 });
 
-// Configure multer to handle file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
@@ -30,23 +31,40 @@ const upload = multer({ storage });
 router.post('/signup', async (req, res) => {
     try {
         const { username, email, password } = req.body;
+
+        // Generate a unique user ID
+        const userId = uuidv4();
+
+        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create a new user
         const newUser = new User({
+            userId,
             username,
             email,
             password: hashedPassword,
         });
 
         await newUser.save();
-        res.status(201).json({ message: 'User created successfully!' });
+
+        // Create JWT Token
+        const token = jwt.sign({ userId: newUser.userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.status(201).json({
+            message: 'User created successfully!',
+            user: {
+                userId: newUser.userId,
+                username: newUser.username,
+                email: newUser.email,
+            },
+            token, // Send the token to the client
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Sign In Route
 router.post('/signin', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -61,13 +79,24 @@ router.post('/signin', async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        res.status(200).json({ message: 'Sign in successful', user });
+        // Create JWT Token
+        const token = jwt.sign({ userId: user.userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.status(200).json({
+            message: 'Sign in successful',
+            user: {
+                userId: user.userId,
+                username: user.username,
+                email: user.email,
+            },
+            token,
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Upload Profile Picture Route
+
 router.post('/upload-profile-picture', upload.single('profilePicture'), async (req, res) => {
     try {
         const { email } = req.body;
@@ -135,7 +164,6 @@ router.post('/auth/facebook', async (req, res) => {
             await user.save();
         }
 
-        // Create JWT token
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.status(200).json({
