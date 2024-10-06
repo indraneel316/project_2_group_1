@@ -6,7 +6,7 @@ body {
     background-color: #333;
     height: 100vh;
     margin: 0;
-    display: flex; /* Using Flexbox for centering */
+    display: flex;
     justify-content: flex-end; /* Align to the right */
     align-items: center; /* Center vertically */
     padding-right: 20px; /* Right padding */
@@ -57,27 +57,27 @@ body {
 
 .sign-in-form a,
 .sign-up-form a {
-    color: #e74c3c; /* Link color */
+    color: #e74c3c;
 }
 
 .sign-in-form a:hover,
 .sign-up-form a:hover {
-    text-decoration: underline; /* Underline on hover */
+    text-decoration: underline;
 }
 
 .text-warning {
-    color: #ffcc00; /* Warning text color */
+    color: #ffcc00;
 }
 
 @media (max-width: 768px) {
     .sign-in-container,
     .sign-up-container {
-        width: 100%; /* Full width on smaller screens */
-        padding: 30px; /* Reduced padding */
+        width: 100%;
+        padding: 30px;
     }
 
     .sign-in-form .btn-danger,
     .sign-up-form .btn-danger {
-        padding: 12px; /* Adjusted button padding */
+        padding: 12px;
     }
 }

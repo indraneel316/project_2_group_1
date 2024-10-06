@@ -28,7 +28,8 @@ const NavBar = () => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ms-auto">
                         <li className="nav-item d-lg-none">
-                            <span className="nav-link" onClick={toggleBreadcrumbs} style={{ cursor: 'pointer' }}>Menu</span>
+                            <span className="nav-link" onClick={toggleBreadcrumbs}
+                                  style={{cursor: 'pointer'}}>Menu</span>
                         </li>
                         {showBreadcrumbs && (
                             <li className="nav-item">
@@ -37,6 +38,7 @@ const NavBar = () => {
                                 <Link className="nav-link" to="/product">Product</Link>
                             </li>
                         )}
+
                         <li className="nav-item">
                             <Link className="nav-link" to="/">Home</Link>
                         </li>
@@ -49,7 +51,8 @@ const NavBar = () => {
                         {user ? (
                             <>
                                 <li className="nav-item">
-                                    <span className="nav-link" style={{ cursor: 'pointer' }} onClick={onSignOut}>Sign Out</span>
+                                    <span className="nav-link" style={{cursor: 'pointer'}}
+                                          onClick={onSignOut}>Sign Out</span>
                                 </li>
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/profile">

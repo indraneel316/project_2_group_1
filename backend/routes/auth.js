@@ -70,14 +70,13 @@ router.post('/signin', async (req, res) => {
 // Upload Profile Picture Route
 router.post('/upload-profile-picture', upload.single('profilePicture'), async (req, res) => {
     try {
-        const { email } = req.body; // Get email from request body to find the user
+        const { email } = req.body;
         const user = await User.findOne({ email });
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Delete old profile picture from S3 if it exists
         if (user.profilePicture) {
             const oldFileName = user.profilePicture.split('/').pop(); // Extract the filename from URL
 
@@ -86,7 +85,6 @@ router.post('/upload-profile-picture', upload.single('profilePicture'), async (r
                 Key: oldFileName, // The file name you want to delete
             };
 
-            // Use the deleteObject method from the S3 instance
             await s3.deleteObject(deleteParams);
         }
 
@@ -111,9 +109,8 @@ router.post('/upload-profile-picture', upload.single('profilePicture'), async (r
     }
 });
 
-// Facebook Login Route - receives access token from frontend
 router.post('/auth/facebook', async (req, res) => {
-    const { accessToken } = req.body; // Get access token from request body
+    const { accessToken } = req.body;
 
     try {
         // Verify the access token with Facebook

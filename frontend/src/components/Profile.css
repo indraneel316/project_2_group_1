@@ -61,7 +61,6 @@ body {
     padding: 10px;
 }
 
-/* Adjusting button hover state */
 .btn-outline-danger:hover,
 .btn-outline-secondary:hover {
     background-color: #e74c3c;
@@ -69,11 +68,10 @@ body {
     transition: background-color 0.3s ease;
 }
 
-/* Spacing between buttons */
 .btn-group {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Adjusts the space between buttons */
+    gap: 15px;
 }
 
 .text-warning {
@@ -93,14 +91,49 @@ body {
     }
 
     .btn-group {
-        gap: 12px; /* Reduce spacing between buttons for smaller screens */
+        gap: 12px;
     }
 }
 .d-flex.justify-content-between .btn-outline-danger,
 .d-flex.justify-content-between .btn-success {
-    width: 48%; /* Make the buttons take up equal space */
+    width: 48%;
 }
 
 .d-flex.justify-content-between .btn-outline-danger {
     margin-right: 4%; /* Add space between the buttons */
+}
+.profile-icon {
+    transition: filter 0.3s ease;
+}
+
+.profile-icon.editing {
+    filter: brightness(0.5);
+}
+
+.profile-icon {
+    transition: filter 0.3s;
+}
+
+.profile-icon {
+    transition: filter 0.3s;
+}
+
+
+
+.position-relative:hover .edit-icon {
+    display: block; /* Show on hover */
+}
+
+.editing {
+    filter: grayscale(100%);
+}
+
+.edit-icon {
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease; /* Smooth transition */
+}
+
+.profile-icon:hover + .edit-icon,
+.edit-icon:hover {
+    opacity: 1; /* Show on hover */
 }

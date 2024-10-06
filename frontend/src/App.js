@@ -14,7 +14,6 @@ const App = () => {
 
     return (
         <>
-            {/* Conditionally render NavBar */}
             {location.pathname !== '/signin' && location.pathname !== '/signup' && <NavBar/>}
 
             <Routes>
