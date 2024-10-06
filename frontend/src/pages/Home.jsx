@@ -13,7 +13,6 @@ const Home = () => {
                 Your browser does not support the video tag.
             </video>
 
-            {/* Overlay for Text Content */}
             <div className="overlay d-flex justify-content-center align-items-center">
                 <div className="text-center text-white">
                     <h1 className="display-4 mb-4 text-danger">Discover Nutrition with Precision</h1>
@@ -27,7 +26,6 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Modal for additional information */}
             {showModal && (
                 <div className="modal" tabIndex="-1" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.8)' }}>
                     <div className="modal-dialog">
