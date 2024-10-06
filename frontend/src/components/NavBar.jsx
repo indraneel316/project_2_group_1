@@ -1,18 +1,16 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserContext } from '../context/userContext'; // Adjust the path according to your project structure
+import { UserContext } from '../context/userContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './NavBar.css'; // Import custom styles
 
 const NavBar = () => {
-    const { user, setUser } = useContext(UserContext); // Get user state from context
+    const { user, setUser } = useContext(UserContext);
     const navigate = useNavigate();
     const [showBreadcrumbs, setShowBreadcrumbs] = useState(false);
 
     const onSignOut = () => {
-        // Clear user context and any other related data (like tokens)
-        setUser(null); // Clear the user session
-        // Redirect to the Sign In page
+        setUser(null);
         navigate('/signin');
     };
 
@@ -54,7 +52,19 @@ const NavBar = () => {
                                     <span className="nav-link" style={{ cursor: 'pointer' }} onClick={onSignOut}>Sign Out</span>
                                 </li>
                                 <li className="nav-item">
-                                    <Link className="nav-link text-danger" to="/upload-profile-picture">👤</Link>
+                                    <Link className="nav-link" to="/profile">
+                                        <img
+                                            src={user.profilePicture || 'https://via.placeholder.com/40'}
+                                            alt="Profile"
+                                            className="rounded-circle"
+                                            style={{
+                                                width: '40px',
+                                                height: '40px',
+                                                objectFit: 'cover',
+                                                border: '2px solid #fff'
+                                            }}
+                                        />
+                                    </Link>
                                 </li>
                             </>
                         ) : (

@@ -9,20 +9,18 @@ passport.use(new FacebookStrategy({
         clientID: process.env.FACEBOOK_APP_ID,
         clientSecret: process.env.FACEBOOK_APP_SECRET,
         callbackURL: "/auth/facebook/callback",
-        profileFields: ['id', 'emails', 'name', 'photos'] // Fetch email, name, and photos
+        profileFields: ['id', 'emails', 'name', 'photos']
     },
     async (accessToken, refreshToken, profile, done) => {
         try {
             const email = profile.emails[0].value;
-            const profilePicture = profile.photos[0].value; // Get profile picture URL
+            const profilePicture = profile.photos[0].value;
 
-            // Check if user already exists by email
             const user = await User.findOne({ email });
             if (user) {
                 return done(null, user);
             }
 
-            // If new user, create and save in DB
             const newUser = new User({
                 email,
                 username: `${profile.name.givenName} ${profile.name.familyName}`,

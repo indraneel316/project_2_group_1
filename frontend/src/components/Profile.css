@@ -1,0 +1,106 @@
+body {
+    background-image: url('https://papers.co/wallpaper/papers.co-ai16-pepper-red-hot-food-art-35-3840x2160-4k-wallpaper.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #333;
+    height: 100vh;
+    margin: 0;
+    max-width: 100%;
+    align-items: center;
+    justify-content: center;
+    padding-right: 20px;
+}
+
+.card {
+    background-color: #444;
+    width: 1500px;
+    max-width: 90%;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    color: white;
+    justify-content: center;
+}
+
+.form-control {
+    background-color: #333;
+    border: 1px solid #999;
+    color: white;
+    transition: border 0.3s, background-color 0.3s;
+}
+
+.form-control:focus {
+    background-color: #555;
+    border-color: #e74c3c;
+    color: white;
+}
+
+/* Button Styling */
+.btn-success {
+    background-color: #e74c3c;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+}
+
+.btn-success:hover {
+    background-color: white;
+    color: #e74c3c;
+    transition: background-color 0.3s ease;
+}
+
+.btn-outline-danger,
+.btn-outline-secondary {
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+    background-color: transparent;
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px;
+}
+
+/* Adjusting button hover state */
+.btn-outline-danger:hover,
+.btn-outline-secondary:hover {
+    background-color: #e74c3c;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+/* Spacing between buttons */
+.btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Adjusts the space between buttons */
+}
+
+.text-warning {
+    color: #ffcc00;
+}
+
+@media (max-width: 768px) {
+    .card {
+        padding: 30px;
+        width: 100%;
+    }
+
+    .btn-success,
+    .btn-outline-danger,
+    .btn-outline-secondary {
+        padding: 12px;
+    }
+
+    .btn-group {
+        gap: 12px; /* Reduce spacing between buttons for smaller screens */
+    }
+}
+.d-flex.justify-content-between .btn-outline-danger,
+.d-flex.justify-content-between .btn-success {
+    width: 48%; /* Make the buttons take up equal space */
+}
+
+.d-flex.justify-content-between .btn-outline-danger {
+    margin-right: 4%; /* Add space between the buttons */
+}

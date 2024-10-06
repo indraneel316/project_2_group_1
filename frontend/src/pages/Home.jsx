@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import './Home.css'; // Custom styles
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './Home.css';
 
 const Home = () => {
     const [showModal, setShowModal] = useState(false);

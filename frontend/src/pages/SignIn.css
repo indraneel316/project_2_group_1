@@ -6,78 +6,78 @@ body {
     background-color: #333;
     height: 100vh;
     margin: 0;
-    display: flex;
-    max-width: 100%;
-    align-items: center;
-    justify-content: center;
-    padding-right: 20px;
+    display: flex; /* Using Flexbox for centering */
+    justify-content: flex-end; /* Align to the right */
+    align-items: center; /* Center vertically */
+    padding-right: 20px; /* Right padding */
 }
 
 .sign-in-container, .sign-up-container {
     background-color: #444;
-    width: 450px;
-    max-width: 90%;
-    padding: 50px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-    color: white;
-    margin-left: 1500px;
+    width: 450px; /* Width of the card */
+    max-width: 90%; /* Responsive max width */
+    padding: 50px; /* Padding for the card */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Shadow effect */
+    color: white; /* Text color */
+    margin-right: 100px; /* Increase the right margin to move it further */
+    transform: translateX(30px); /* Move it further right using transform */
 }
 
 .sign-in-form .form-control,
 .sign-up-form .form-control {
-    background-color: #333;
-    border: 1px solid #999;
-    color: white;
-    transition: border 0.3s, background-color 0.3s;
+    background-color: #333; /* Input background */
+    border: 1px solid #999; /* Border color */
+    color: white; /* Input text color */
+    transition: border 0.3s, background-color 0.3s; /* Transition effects */
 }
 
 .sign-in-form .form-control:focus,
 .sign-up-form .form-control:focus {
-    background-color: #555;
-    border-color: #e74c3c;
-    color: white;
+    background-color: #555; /* Focused input background */
+    border-color: #e74c3c; /* Focused border color */
+    color: white; /* Focused text color */
 }
 
 .sign-in-form .btn-danger,
 .sign-up-form .btn-danger {
-    background-color: #e74c3c;
-    border: none;
-    width: 100%;
-    padding: 10px;
-    margin-top: 15px;
+    background-color: #e74c3c; /* Button background color */
+    border: none; /* No border */
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding */
+    margin-top: 15px; /* Top margin */
 }
 
 .sign-in-form .btn-danger:hover,
 .sign-up-form .btn-danger:hover {
-    background-color: white;
-    color: #e74c3c;
+    background-color: white; /* Hover background */
+    color: #e74c3c; /* Hover text color */
     transition: background-color 0.3s ease; /* Smooth hover transition */
 }
 
 .sign-in-form a,
 .sign-up-form a {
-    color: #e74c3c;
+    color: #e74c3c; /* Link color */
 }
 
 .sign-in-form a:hover,
 .sign-up-form a:hover {
-    text-decoration: underline;
+    text-decoration: underline; /* Underline on hover */
 }
 
 .text-warning {
-    color: #ffcc00;
+    color: #ffcc00; /* Warning text color */
 }
 
 @media (max-width: 768px) {
     .sign-in-container,
     .sign-up-container {
-        padding: 30px;
-        width: 100%;
+        width: 100%; /* Full width on smaller screens */
+        padding: 30px; /* Reduced padding */
     }
 
     .sign-in-form .btn-danger,
     .sign-up-form .btn-danger {
-        padding: 12px;
+        padding: 12px; /* Adjusted button padding */
     }
 }

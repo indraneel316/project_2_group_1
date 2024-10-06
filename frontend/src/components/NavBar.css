@@ -1,16 +1,16 @@
 .navbar-brand {
-    font-size: 1.75rem; /* Increase the font size for the brand name */
+    font-size: 1.75rem;
 }
 
 .navbar-nav .nav-link {
-    color: white; /* Default text color */
-    font-size: 1.2rem; /* Increase font size for nav links */
+    color: white;
+    font-size: 1.2rem;
 }
 
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link:focus {
-    color: red; /* Red color on hover */
-    transition: color 0.3s ease-in-out; /* Smooth hover effect */
+    color: red;
+    transition: color 0.3s ease-in-out;
 }
 
 .navbar {
@@ -23,17 +23,17 @@
     }
 
     .navbar-nav {
-        display: none; /* Hide the nav links initially */
+        display: none;
     }
 
     .navbar-nav.show {
-        display: block; /* Show nav links when clicked */
-        background-color: rgba(0, 0, 0, 0.9); /* Optional background for better visibility */
+        display: block;
+        background-color: rgba(0, 0, 0, 0.9);
         position: absolute;
         right: 0;
-        top: 60px; /* Align under the navbar */
+        top: 60px;
         width: 100%;
-        text-align: center; /* Center the links */
+        text-align: center;
     }
 }
 
