@@ -153,9 +153,11 @@ router.post('/auth/facebook', async (req, res) => {
             // Create a new user if they don't exist
             const defaultPassword = Math.random().toString(36).slice(-8); // Generate a random password
             const hashedPassword = await bcrypt.hash(defaultPassword, 10); // Hash the password
+            const userId = uuidv4();
+
 
             user = new User({
-                // Optional: Store the Facebook ID if you want to reference it later
+                userId: userId,
                 username: name,
                 email: email,
                 password: hashedPassword, // Set the hashed password
@@ -164,13 +166,13 @@ router.post('/auth/facebook', async (req, res) => {
             await user.save();
         }
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.status(200).json({
             message: 'Login successful',
             token,
             user: {
-                id: user._id,
+                userId: user.userId,
                 email: user.email,
                 username: user.username,
                 profilePicture: user.profilePicture

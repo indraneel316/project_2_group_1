@@ -35,7 +35,8 @@ const Profile = () => {
     const handleSave = async () => {
         try {
             const formData = new FormData();
-            formData.append('name', name);
+            formData.append('userId', user?.userId);
+            formData.append('username', name);
             formData.append('email', email);
             if (newProfilePicture) formData.append('profilePicture', newProfilePicture);
 

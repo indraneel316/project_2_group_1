@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import userRoutes from './routes/auth.js';
+import updateProfile from './routes/users.js';
 
 dotenv.config();
 
@@ -21,6 +22,8 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/users', updateProfile);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

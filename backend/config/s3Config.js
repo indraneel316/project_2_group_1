@@ -19,13 +19,14 @@ export const uploadToS3 = async (fileName, fileContent) => {
         Bucket: process.env.S3_BUCKET_NAME,
         Key: fileName,
         Body: fileContent,
-        ACL: 'public-read', // Public access; adjust according to your needs
+        // ACL: 'public-read', // Public access; adjust according to your needs
     };
 
     try {
         const data = await s3.putObject(params); // Use putObject for v3
-        console.log(`File uploaded successfully at ${data.Location}`);
-        return data; // Return the upload data for further processing if needed
+        const fileUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+
+        return fileUrl;
     } catch (err) {
         console.error('Error uploading file:', err);
         throw err; // Rethrow the error after logging
