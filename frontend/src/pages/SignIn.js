@@ -14,7 +14,7 @@ const SignIn = () => {
 
     const handleSignIn = async (e) => {
         e.preventDefault();
-        setError(''); // Clear previous error
+        setError('');
 
         try {
             const response = await axios.post('http://localhost:5000/api/users/signin', { email, password });

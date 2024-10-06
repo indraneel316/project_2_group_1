@@ -1,0 +1,61 @@
+/* Styling for Contact Form similar to SignIn */
+
+.contact-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: auto;
+}
+
+.contact-container {
+    background-color: #444;
+    width: 450px;
+    max-width: 90%;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    color: white;
+    margin-right: 100px;
+    transform: translateX(30px);
+}
+
+h1 {
+    color: white;
+    font-weight: bold;
+}
+
+.contact-form .form-control {
+    background-color: #333;
+    border: 1px solid #999;
+    color: white;
+    transition: border 0.3s, background-color 0.3s;
+}
+
+.contact-form .form-control:focus {
+    background-color: #555;
+    border-color: #e74c3c;
+    color: white;
+}
+
+.contact-form .invalid-feedback {
+    color: #dc3545;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.alert-success {
+    background-color: #e74c3c;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 10px;
+}
