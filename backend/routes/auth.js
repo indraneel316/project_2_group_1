@@ -138,7 +138,7 @@ router.post('/upload-profile-picture', upload.single('profilePicture'), async (r
     }
 });
 
-router.post('/auth/facebook', async (req, res) => {
+router.post('/facebook', async (req, res) => {
     const { accessToken } = req.body;
 
     try {

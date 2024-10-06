@@ -18,7 +18,7 @@ const SignUp = () => {
         setError(''); // Clear previous error
 
         try {
-            const response = await axios.post('http://localhost:5000/api/users/signup', { username, email, password });
+            const response = await axios.post('http://localhost:5000/auth/users/signup', { username, email, password });
             setUser(response.data.user); // Set user information in context
             navigate('/'); // Redirect to home page
         } catch (error) {
@@ -30,7 +30,7 @@ const SignUp = () => {
     const responseFacebook = async (response) => {
         if (response.accessToken) {
             try {
-                const res = await axios.post('http://localhost:5000/api/users/auth/facebook', {
+                const res = await axios.post('http://localhost:5000/auth/users/facebook', {
                     accessToken: response.accessToken
                 });
                 setUser(res.data.user);

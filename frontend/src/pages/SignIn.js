@@ -17,7 +17,7 @@ const SignIn = () => {
         setError('');
 
         try {
-            const response = await axios.post('http://localhost:5000/api/users/signin', { email, password });
+            const response = await axios.post('http://localhost:5000/auth/users/signin', { email, password });
 
             // Store token in sessionStorage
             sessionStorage.setItem('authToken', response.data.token);
@@ -34,7 +34,7 @@ const SignIn = () => {
     const responseFacebook = async (response) => {
         if (response.accessToken) {
             try {
-                const res = await axios.post('http://localhost:5000/api/users/auth/facebook', {
+                const res = await axios.post('http://localhost:5000/auth/users/facebook', {
                     accessToken: response.accessToken
                 });
 

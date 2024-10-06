@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGODB_URI)
     .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
-app.use('/api/users', userRoutes);
+app.use('/auth/users', userRoutes);
 app.use('/api/users', updateProfile);
 
 

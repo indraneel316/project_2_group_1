@@ -9,17 +9,15 @@
     z-index: -1;
 }
 
-/* Overlay to darken the background */
 .overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7); /* Black with opacity for contrast */
+    background: rgba(0, 0, 0, 0.7);
 }
 
-/* Customizing the button */
 .btn-danger {
     background-color: #dc3545;
     border: none;
@@ -31,7 +29,7 @@
 .home-container {
     position: relative;
     height: 100vh;
-    overflow: hidden; /* Prevents scrolling */
+    overflow: hidden;
 }
 
 .background-video {

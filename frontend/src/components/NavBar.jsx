@@ -62,7 +62,7 @@ const NavBar = () => {
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/profile">
                                         <img
-                                            src={user.profilePicture || 'https://via.placeholder.com/40'}
+                                            src={user.profilePicture || 'https://www.clipartmax.com/png/middle/17-172602_computer-icons-user-profile-male-portrait-of-a-man.png'}
                                             alt="Profile"
                                             className="rounded-circle"
                                             style={{
