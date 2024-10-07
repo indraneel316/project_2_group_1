@@ -57,7 +57,7 @@ router.post('/signup', async (req, res) => {
                 username: newUser.username,
                 email: newUser.email,
             },
-            token, // Send the token to the client
+            token,
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -87,6 +87,7 @@ router.post('/signin', async (req, res) => {
                 userId: user.userId,
                 username: user.username,
                 email: user.email,
+                profilePicture: user.profilePicture
             },
             token,
         });
