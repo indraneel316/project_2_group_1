@@ -3,7 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const About = () => {
     return (
-        <div className="container-fluid bg-black text-white min-vh-100 d-flex align-items-center justify-content-center">
+        <div className="container-fluid bg-black text-white min-vh-100 d-flex align-items-center justify-content-center"
+        style={{position:'absolute', marginTop:'3rem'}}>
             <div className="p-5 rounded" style={{maxWidth: '900px'}}>
                 <h1 className="display-4 mb-4 text-danger text-center">Discover Nutrition with Precision</h1>
 
