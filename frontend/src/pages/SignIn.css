@@ -14,45 +14,45 @@ body {
 
 .sign-in-container, .sign-up-container {
     background-color: #444;
-    width: 450px; /* Width of the card */
-    max-width: 90%; /* Responsive max width */
-    padding: 50px; /* Padding for the card */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Shadow effect */
-    color: white; /* Text color */
-    margin-right: 100px; /* Increase the right margin to move it further */
-    transform: translateX(30px); /* Move it further right using transform */
+    width: 450px;
+    max-width: 90%;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    color: white;
+    margin-right: 100px;
+    transform: translateX(30px);
 }
 
 .sign-in-form .form-control,
 .sign-up-form .form-control {
-    background-color: #333; /* Input background */
-    border: 1px solid #999; /* Border color */
-    color: white; /* Input text color */
-    transition: border 0.3s, background-color 0.3s; /* Transition effects */
+    background-color: #333;
+    border: 1px solid #999;
+    color: white;
+    transition: border 0.3s, background-color 0.3s;
 }
 
 .sign-in-form .form-control:focus,
 .sign-up-form .form-control:focus {
-    background-color: #555; /* Focused input background */
-    border-color: #e74c3c; /* Focused border color */
-    color: white; /* Focused text color */
+    background-color: #555;
+    border-color: #e74c3c;
+    color: white;
 }
 
 .sign-in-form .btn-danger,
 .sign-up-form .btn-danger {
-    background-color: #e74c3c; /* Button background color */
-    border: none; /* No border */
-    width: 100%; /* Full width */
-    padding: 10px; /* Padding */
-    margin-top: 15px; /* Top margin */
+    background-color: #e74c3c;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
 }
 
 .sign-in-form .btn-danger:hover,
 .sign-up-form .btn-danger:hover {
-    background-color: white; /* Hover background */
-    color: #e74c3c; /* Hover text color */
-    transition: background-color 0.3s ease; /* Smooth hover transition */
+    background-color: white;
+    color: #e74c3c;
+    transition: background-color 0.3s ease;
 }
 
 .sign-in-form a,

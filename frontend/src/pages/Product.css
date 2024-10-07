@@ -1,29 +1,28 @@
 body {
-    background-color: black; /* Set the background of the whole page to black */
+    background-color: black;
 }
 
 .card {
-    background-color: red; /* Set card background to red */
-    border: none; /* Remove card border */
+    background-color: red;
+    border: none;
 }
 
 .card-title {
-    color: white; /* Ensure card title text is white */
+    color: white;
 }
 
 .card-text {
-    color: white; /* Ensure card description text is white */
+    color: white;
 }
 
 .consistent-img {
-    height: 200px; /* Set a fixed height for images */
-    object-fit: cover; /* Maintain aspect ratio and fill the space */
-    width: 100%; /* Ensure the image takes full width */
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
 }
 
-/* Flexbox for equal height cards */
 .card-body {
-    display: flex; /* Make the body a flex container */
-    flex-direction: column; /* Arrange items in a column */
-    flex-grow: 1; /* Allow the body to grow to fill the card */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }

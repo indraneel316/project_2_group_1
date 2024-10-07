@@ -1,8 +1,8 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import './Product.css'; // Custom styles
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './Product.css';
 
-// Demo products data
+
 const products = [
     {
         id: 1,

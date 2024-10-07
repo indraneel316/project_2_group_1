@@ -33,11 +33,11 @@
     }
 
     .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml,..."); /* Optional: customize icon */
+        background-image: url("data:image/svg+xml,...");
     }
 
     .navbar-collapse {
-        background-color: rgba(0, 0, 0, 0.9); /* Add background for mobile view */
+        background-color: rgba(0, 0, 0, 0.9);
     }
 
     .navbar-nav .nav-link {
@@ -47,7 +47,7 @@
 }
 
 .navbar-nav .nav-link {
-    padding: 0.5rem 1rem; /* Adjust link padding */
+    padding: 0.5rem 1rem;
 }
 
 .navbar-toggler-icon {

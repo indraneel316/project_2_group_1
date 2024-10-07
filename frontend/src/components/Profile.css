@@ -127,7 +127,7 @@ body {
 }
 
 .position-relative:hover .edit-icon {
-    display: block; /* Show on hover */
+    display: block;
 }
 
 .editing {
@@ -135,11 +135,11 @@ body {
 }
 
 .edit-icon {
-    opacity: 0; /* Initially hidden */
-    transition: opacity 0.3s ease; /* Smooth transition */
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .profile-icon:hover + .edit-icon,
 .edit-icon:hover {
-    opacity: 1; /* Show on hover */
+    opacity: 1;
 }
