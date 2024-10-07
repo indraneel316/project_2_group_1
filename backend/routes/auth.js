@@ -48,7 +48,6 @@ router.post('/signup', async (req, res) => {
 
         await newUser.save();
 
-        // Create JWT Token
         const token = jwt.sign({ userId: newUser.userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.status(201).json({
@@ -58,7 +57,7 @@ router.post('/signup', async (req, res) => {
                 username: newUser.username,
                 email: newUser.email,
             },
-            token, // Send the token to the client
+            token,
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -88,6 +87,7 @@ router.post('/signin', async (req, res) => {
                 userId: user.userId,
                 username: user.username,
                 email: user.email,
+                profilePicture: user.profilePicture
             },
             token,
         });
@@ -96,47 +96,6 @@ router.post('/signin', async (req, res) => {
     }
 });
 
-
-router.post('/upload-profile-picture', upload.single('profilePicture'), async (req, res) => {
-    try {
-        const { email } = req.body;
-        const user = await User.findOne({ email });
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        if (user.profilePicture) {
-            const oldFileName = user.profilePicture.split('/').pop(); // Extract the filename from URL
-
-            const deleteParams = {
-                Bucket: process.env.S3_BUCKET_NAME, // Your S3 bucket name
-                Key: oldFileName, // The file name you want to delete
-            };
-
-            await s3.deleteObject(deleteParams);
-        }
-
-        // Upload new profile picture to S3
-        const fileName = `${Date.now()}_${req.file.originalname}`;
-        const uploadedFile = await uploadToS3(fileName, req.file.buffer);
-
-        // Update user with new profile picture URL
-        const updatedUser = await User.findOneAndUpdate(
-            { email }, // Find user by email
-            { profilePicture: uploadedFile }, // Update profile picture URL
-            { new: true }
-        );
-
-        res.status(200).json({
-            message: 'Profile picture updated successfully!',
-            profilePicture: uploadedFile, // Assuming uploadToS3 returns the URL
-            user: updatedUser,
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
 
 router.post('/facebook', async (req, res) => {
     const { accessToken } = req.body;
