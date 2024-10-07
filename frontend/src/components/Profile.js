@@ -19,11 +19,11 @@ const Profile = () => {
         setName(user?.username || '');
         setEmail(user?.email || '');
         setProfilePicture(user?.profilePicture || '');
-        setNewProfilePicture(null); // Reset the new profile picture selection
+        setNewProfilePicture(null);
     };
 
     const handleFileChange = (e) => {
-        const file = e.target.files[0]; // Get the first selected file
+        const file = e.target.files[0];
         if (file && file.type.startsWith('image/')) { // Ensure it's an image
             setNewProfilePicture(file);
             setProfilePicture(URL.createObjectURL(file)); // Preview new profile picture
@@ -40,7 +40,7 @@ const Profile = () => {
             formData.append('email', email);
             if (newProfilePicture) formData.append('profilePicture', newProfilePicture);
 
-            const response = await axios.put('http://localhost:5000/api/users/profile', formData, {
+            const response = await axios.put('http://3.131.213.236:5000/api/users/profile', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
 
@@ -76,13 +76,13 @@ const Profile = () => {
                         className="edit-icon"
                         style={{
                             position: 'absolute',
-                            top: '50%', // Center vertically
-                            left: '50%', // Center horizontally
-                            transform: 'translate(-50%, -50%)', // Adjust for icon size
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
                             cursor: 'pointer',
-                            display: editing ? 'block' : 'none', // Show only when editing
-                            color: '#e74c3c', // Pencil color
-                            fontSize: '24px', // Adjust icon size as needed
+                            display: editing ? 'block' : 'none',
+                            color: '#e74c3c',
+                            fontSize: '24px',
                             background: 'rgba(255, 255, 255, 0.6)', // Optional background to highlight icon
                             borderRadius: '50%', // Optional: round background
                             padding: '5px', // Optional: padding for click area

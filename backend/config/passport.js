@@ -24,8 +24,8 @@ passport.use(new FacebookStrategy({
             const newUser = new User({
                 email,
                 username: `${profile.name.givenName} ${profile.name.familyName}`,
-                facebookId: profile.id,  // Store Facebook ID for future reference
-                profilePicture,           // Save the profile picture URL
+                facebookId: profile.id,
+                profilePicture,
             });
 
             await newUser.save();
@@ -36,7 +36,6 @@ passport.use(new FacebookStrategy({
     }
 ));
 
-// Serialize and Deserialize User
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });

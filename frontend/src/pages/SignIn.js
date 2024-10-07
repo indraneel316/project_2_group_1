@@ -5,6 +5,8 @@ import { UserContext } from '../context/userContext';
 import { useNavigate } from 'react-router-dom';
 import './SignIn.css';
 
+
+
 const SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -17,12 +19,10 @@ const SignIn = () => {
         setError('');
 
         try {
-            const response = await axios.post('http://localhost:5000/auth/users/signin', { email, password });
+            const response = await axios.post('http://3.131.213.236:5000/auth/users/signin', { email, password });
 
-            // Store token in sessionStorage
             sessionStorage.setItem('authToken', response.data.token);
 
-            // Update user context with the signed-in user data
             setUser(response.data.user);
             navigate('/');
         } catch (error) {
@@ -31,28 +31,26 @@ const SignIn = () => {
         }
     };
 
-    const responseFacebook = async (response) => {
-        if (response.accessToken) {
-            try {
-                const res = await axios.post('http://localhost:5000/auth/users/facebook', {
-                    accessToken: response.accessToken
-                });
-
-                // Store token in sessionStorage
-                sessionStorage.setItem('authToken', res.data.token);
-
-                // Update user context with Facebook user data
-                setUser(res.data.user);
-                navigate('/');
-            } catch (error) {
-                console.error('Error during Facebook authentication:', error);
-                setError('Failed to authenticate with Facebook.');
-            }
-        } else {
-            console.error('Failed to obtain access token from Facebook');
-            setError('Could not log in with Facebook');
-        }
-    };
+    // const responseFacebook = async (response) => {
+    //     if (response.accessToken) {
+    //         try {
+    //             const res = await axios.post('https://18.216.109.236:5000/auth/users/facebook', {
+    //                 accessToken: response.accessToken
+    //             });
+    //
+    //             sessionStorage.setItem('authToken', res.data.token);
+    //
+    //             setUser(res.data.user);
+    //             navigate('/');
+    //         } catch (error) {
+    //             console.error('Error during Facebook authentication:', error);
+    //             setError('Failed to authenticate with Facebook.');
+    //         }
+    //     } else {
+    //         console.error('Failed to obtain access token from Facebook');
+    //         setError('Could not log in with Facebook');
+    //     }
+    // };
 
     return (
         <div className="sign-in-wrapper" style={{position: 'absolute',
@@ -60,7 +58,6 @@ const SignIn = () => {
             justifyContent: 'center',
             alignItems: 'center',
             top: '25%',
-            /* height: 100%; */
             width: '100%'}}>
             <div className="sign-in-container">
                 <h1 className="text-center mb-4">Sign In</h1>
@@ -90,14 +87,14 @@ const SignIn = () => {
                     </button>
                     {error && <p className="text-warning mt-2">{error}</p>}
                 </form>
-                <FacebookLogin
-                    appId="1957293021457370"
-                    autoLoad={false}
-                    fields="name,email,picture"
-                    callback={responseFacebook}
-                    cssClass="btn btn-primary w-100 mt-3"
-                    textButton="Login with Facebook"
-                />
+                {/*<FacebookLogin*/}
+                {/*    appId="1957293021457370"*/}
+                {/*    autoLoad={false}*/}
+                {/*    fields="name,email,picture"*/}
+                {/*    callback={responseFacebook}*/}
+                {/*    cssClass="btn btn-primary w-100 mt-3"*/}
+                {/*    textButton="Login with Facebook"*/}
+                {/*/>*/}
                 <p className="mt-3">
                     Don't have an account? <a href="/signup" className="text-danger">Sign Up</a>
                 </p>

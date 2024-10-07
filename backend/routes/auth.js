@@ -1,6 +1,5 @@
 import express from 'express';
 import multer from 'multer';
-import { uploadToS3 } from '../config/s3Config.js';
 import User from '../model/User.js';
 import bcrypt from 'bcryptjs';
 import { S3 } from '@aws-sdk/client-s3';
@@ -8,7 +7,6 @@ import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import authenticateToken from '../middleware/authenticateToken.js'; // JWT Middleware
 
 
 
@@ -27,18 +25,14 @@ const s3 = new S3({
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// Sign Up Route
 router.post('/signup', async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
-        // Generate a unique user ID
         const userId = uuidv4();
 
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create a new user
         const newUser = new User({
             userId,
             username,
@@ -78,7 +72,6 @@ router.post('/signin', async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        // Create JWT Token
         const token = jwt.sign({ userId: user.userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.status(200).json({
@@ -101,17 +94,14 @@ router.post('/facebook', async (req, res) => {
     const { accessToken } = req.body;
 
     try {
-        // Verify the access token with Facebook
         const userData = await axios.get(`https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${accessToken}`);
 
         const { id, name, email, picture } = userData.data;
 
-        // Check if user already exists in your database using email
         let user = await User.findOne({ email });
         if (!user) {
-            // Create a new user if they don't exist
-            const defaultPassword = Math.random().toString(36).slice(-8); // Generate a random password
-            const hashedPassword = await bcrypt.hash(defaultPassword, 10); // Hash the password
+            const defaultPassword = Math.random().toString(36).slice(-8);
+            const hashedPassword = await bcrypt.hash(defaultPassword, 10);
             const userId = uuidv4();
 
 
@@ -119,7 +109,7 @@ router.post('/facebook', async (req, res) => {
                 userId: userId,
                 username: name,
                 email: email,
-                password: hashedPassword, // Set the hashed password
+                password: hashedPassword,
                 profilePicture: picture.data.url
             });
             await user.save();

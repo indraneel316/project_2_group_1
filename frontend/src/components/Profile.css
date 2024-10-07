@@ -9,7 +9,6 @@ body {
     max-width: 100%;
     align-items: center;
     justify-content: center;
-    /*padding-right: 20px;*/
 }
 
 .card {
@@ -94,7 +93,7 @@ body {
         gap: 12px;
     }
 
-    /* Set minimum width to 45% for buttons */
+
     .d-flex.justify-content-between .btn-outline-danger,
     .d-flex.justify-content-between .btn-success {
         width: 50%;
@@ -107,7 +106,7 @@ body {
 }
 
 .d-flex.justify-content-between .btn-outline-danger {
-    margin-right: 4%; /* Add space between the buttons */
+    margin-right: 4%;
 }
 
 .profile-icon {
@@ -127,7 +126,7 @@ body {
 }
 
 .position-relative:hover .edit-icon {
-    display: block; /* Show on hover */
+    display: block;
 }
 
 .editing {
@@ -135,11 +134,11 @@ body {
 }
 
 .edit-icon {
-    opacity: 0; /* Initially hidden */
-    transition: opacity 0.3s ease; /* Smooth transition */
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .profile-icon:hover + .edit-icon,
 .edit-icon:hover {
-    opacity: 1; /* Show on hover */
+    opacity: 1;
 }

@@ -3,7 +3,9 @@ import axios from 'axios';
 import FacebookLogin from 'react-facebook-login';
 import { UserContext } from '../context/userContext';
 import { useNavigate } from 'react-router-dom';
-import './SignIn.css'; // Reuse SignIn.css for consistent styling
+import './SignIn.css';
+
+
 
 const SignUp = () => {
     const [username, setUsername] = useState('');
@@ -15,35 +17,35 @@ const SignUp = () => {
 
     const handleSignUp = async (e) => {
         e.preventDefault();
-        setError(''); // Clear previous error
+        setError('');
 
         try {
-            const response = await axios.post('http://localhost:5000/auth/users/signup', { username, email, password });
-            setUser(response.data.user); // Set user information in context
-            navigate('/'); // Redirect to home page
+            const response = await axios.post('http://3.131.213.236:5000/auth/users/signup', { username, email, password });
+            setUser(response.data.user);
+            navigate('/');
         } catch (error) {
             console.error('Error signing up:', error);
-            setError('Failed to sign up. Please try again.'); // Set error message
+            setError('Failed to sign up. Please try again.');
         }
     };
 
-    const responseFacebook = async (response) => {
-        if (response.accessToken) {
-            try {
-                const res = await axios.post('http://localhost:5000/auth/users/facebook', {
-                    accessToken: response.accessToken
-                });
-                setUser(res.data.user);
-                navigate('/');
-            } catch (error) {
-                console.error('Error during Facebook authentication:', error);
-                setError('Failed to authenticate with Facebook.');
-            }
-        } else {
-            console.error('Failed to obtain access token from Facebook');
-            setError('Could not log in with Facebook');
-        }
-    };
+    // const responseFacebook = async (response) => {
+    //     if (response.accessToken) {
+    //         try {
+    //             const res = await axios.post('https://18.216.109.236:5000/auth/users/facebook', {
+    //                 accessToken: response.accessToken
+    //             });
+    //             setUser(res.data.user);
+    //             navigate('/');
+    //         } catch (error) {
+    //             console.error('Error during Facebook authentication:', error);
+    //             setError('Failed to authenticate with Facebook.');
+    //         }
+    //     } else {
+    //         console.error('Failed to obtain access token from Facebook');
+    //         setError('Could not log in with Facebook');
+    //     }
+    // };
 
     return (
         <div className="sign-up-wrapper" style={{position: 'absolute',
@@ -51,7 +53,6 @@ const SignUp = () => {
             justifyContent: 'center',
             alignItems: 'center',
             top: '25%',
-            /* height: 100%; */
             width: '100%'}}>
             <div className="sign-up-container">
                 <h1 className="text-center mb-4">Sign Up</h1>
@@ -91,14 +92,14 @@ const SignUp = () => {
                     </button>
                     {error && <p className="text-warning mt-2">{error}</p>}
                 </form>
-                <FacebookLogin
-                    appId="1957293021457370"
-                    autoLoad={false}
-                    fields="name,email,picture"
-                    callback={responseFacebook}
-                    cssClass="btn btn-primary w-100 mt-3"
-                    textButton="Login with Facebook"
-                />
+                {/*<FacebookLogin*/}
+                {/*    appId="1957293021457370"*/}
+                {/*    autoLoad={false}*/}
+                {/*    fields="name,email,picture"*/}
+                {/*    callback={responseFacebook}*/}
+                {/*    cssClass="btn btn-primary w-100 mt-3"*/}
+                {/*    textButton="Login with Facebook"*/}
+                {/*/>*/}
                 <p className="mt-3">
                     Already have an account? <a href="/signin" className="text-danger">Sign In</a>
                 </p>

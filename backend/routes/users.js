@@ -2,7 +2,6 @@ import express from 'express';
 import multer from 'multer';
 import {uploadToS3} from '../config/s3Config.js';
 import User from '../model/User.js';
-import authenticateToken from '../middleware/authenticateToken.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -12,7 +11,6 @@ const upload = multer({ storage });
 
 router.put('/profile', upload.single('profilePicture'), async (req, res) => {
     const { name, email } = req.body;
-    // const userId = req.user.userId;
 
     console.log("TRACK DATA REQUEST ", req);
 
@@ -22,7 +20,6 @@ router.put('/profile', upload.single('profilePicture'), async (req, res) => {
         if (email) updates.email = email;
 
         if (req.file) {
-            // const fileName = `${Date.now()}_${req.file.originalname}`;
             updates.profilePicture = await uploadToS3(req.file.originalname, req.file.buffer);
 
         }
