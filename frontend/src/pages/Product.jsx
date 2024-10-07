@@ -50,13 +50,15 @@ const products = [
 
 const Product = () => {
     return (
-        <div className="container my-5">
+        <div className="container"
+             // style={{position:"absolute"}}
+        >
             &nbsp;
             &nbsp;
             <h1 className="text-danger text-center mb-4">Sample Work</h1>
             <div className="row">
                 {products.map((product) => (
-                    <div className="col-md-4 mb-4" key={product.id}>
+                    <div className="col-md-4 mb-4 d-flex justify-content-center" key={product.id}>
                         <div className="card bg-danger text-white h-100"> {/* Added h-100 for full height */}
                             <img src={product.image} alt={product.name} className="card-img-top consistent-img" />
                             <div className="card-body d-flex flex-column"> {/* Flexbox for equal height */}

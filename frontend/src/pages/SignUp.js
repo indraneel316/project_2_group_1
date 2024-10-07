@@ -46,7 +46,13 @@ const SignUp = () => {
     };
 
     return (
-        <div className="sign-up-wrapper">
+        <div className="sign-up-wrapper" style={{position: 'absolute',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            top: '25%',
+            /* height: 100%; */
+            width: '100%'}}>
             <div className="sign-up-container">
                 <h1 className="text-center mb-4">Sign Up</h1>
                 <form onSubmit={handleSignUp} className="sign-up-form">

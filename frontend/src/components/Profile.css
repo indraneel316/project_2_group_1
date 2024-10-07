@@ -9,14 +9,14 @@ body {
     max-width: 100%;
     align-items: center;
     justify-content: center;
-    padding-right: 20px;
+    /*padding-right: 20px;*/
 }
 
 .card {
     background-color: #444;
     width: 1500px;
     max-width: 90%;
-    padding: 50px;
+    padding: 50px 20px;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     color: white;
@@ -93,7 +93,14 @@ body {
     .btn-group {
         gap: 12px;
     }
+
+    /* Set minimum width to 45% for buttons */
+    .d-flex.justify-content-between .btn-outline-danger,
+    .d-flex.justify-content-between .btn-success {
+        width: 50%;
+    }
 }
+
 .d-flex.justify-content-between .btn-outline-danger,
 .d-flex.justify-content-between .btn-success {
     width: 48%;
@@ -102,6 +109,7 @@ body {
 .d-flex.justify-content-between .btn-outline-danger {
     margin-right: 4%; /* Add space between the buttons */
 }
+
 .profile-icon {
     transition: filter 0.3s ease;
 }
@@ -117,8 +125,6 @@ body {
 .profile-icon {
     transition: filter 0.3s;
 }
-
-
 
 .position-relative:hover .edit-icon {
     display: block; /* Show on hover */
