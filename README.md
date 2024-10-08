@@ -12,11 +12,10 @@ The **Food Recognition App** allows users to sign up for an account and update t
 ## Technologies Used
 
 - **Frontend**: React.js, Bootstrap
-- **Backend**: Node.js (Express), Python (for AI processing)
-- **AI/ML**: TensorFlow or PyTorch (for food recognition model)
+- **Backend**: Node.js (Express)
 - **Database**: MongoDB (for user data and food logs)
 - **Containerization**: Docker (for deployment)
-- **Cloud Services**: AWS EC2 for backend and AI processing, AWS S3 for frontend hosting
+- **Cloud Services**: AWS EC2 and AWS S3 for frontend hosting
 
 ---
 
