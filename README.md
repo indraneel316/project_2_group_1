@@ -13,7 +13,7 @@ The **Food Recognition App** allows users to sign up for an account and update t
 
 - **Frontend**: React.js, Bootstrap
 - **Backend**: Node.js (Express)
-- **Database**: MongoDB (for user data and food logs)
+- **Database**: MongoDB
 - **Containerization**: Docker (for deployment)
 - **Cloud Services**: AWS EC2 and AWS S3 for frontend hosting
 
