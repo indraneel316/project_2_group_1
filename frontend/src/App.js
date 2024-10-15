@@ -9,6 +9,7 @@ import SignUp from './pages/SignUp';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Profile from "./components/Profile";
 import Contact from "./pages/Contact";
+import Users from "./pages/Users";
 
 const App = () => {
     const location = useLocation();
@@ -25,6 +26,7 @@ const App = () => {
                 <Route path="/signup" element={<SignUp/>}/>
                 <Route path="/profile" element={<Profile/>}/>
                 <Route path="/contact" element={<Contact/>}/>
+                <Route path="/users" element={<Users/>}/>
             </Routes>
         </>
     );

@@ -1,0 +1,55 @@
+.user-data-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #1b1b1b;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
+}
+
+h3 {
+    text-align: center;
+    color: #ff3333;
+    margin-bottom: 20px;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #333;
+}
+
+.user-table th,
+.user-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+}
+
+
+.user-table th {
+    background-color: #ff3333;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.user-table tr:nth-child(even) {
+    background-color: #444;
+}
+
+.user-table tr:hover {
+    background-color: #555;
+}
+
+.user-table td {
+    color: #fff;
+    font-size: 16px;
+}
+
+
+.error {
+    color: #ff3333;
+    text-align: center;
+    font-weight: bold;
+}

@@ -50,6 +50,9 @@ const NavBar = () => {
                         <li className="nav-item">
                             <Link className="nav-link" to="/contact" onClick={handleLinkClick}>Contact</Link>
                         </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/users" onClick={handleLinkClick}>Users</Link>
+                        </li>
                         {user ? (
                             <>
                                 <li className="nav-item">
@@ -75,7 +78,8 @@ const NavBar = () => {
                             </>
                         ) : (
                             <li className="nav-item">
-                                <Link className="nav-link text-danger" to="/signin" onClick={handleLinkClick}>Sign In</Link>
+                                <Link className="nav-link text-danger" to="/signin" onClick={handleLinkClick}>Sign
+                                    In</Link>
                             </li>
                         )}
                     </ul>
