@@ -12,8 +12,6 @@ const upload = multer({ storage });
 router.put('/profile', upload.single('profilePicture'), async (req, res) => {
     const { name, email } = req.body;
 
-    console.log("TRACK DATA REQUEST ", req);
-
     try {
         const updates = {};
         if (name) updates.name = name;
