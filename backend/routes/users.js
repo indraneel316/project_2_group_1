@@ -56,7 +56,6 @@ router.get('/info', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-g
 
 export default router;
 
