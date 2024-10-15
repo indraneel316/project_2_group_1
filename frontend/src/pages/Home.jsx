@@ -32,7 +32,6 @@ const Home = () => {
                         <div className="modal-content" style={{ backgroundColor: 'black', color: 'white' }}>
                             <div className="modal-header" style={{ position: 'relative' }}>
                                 <h5 className="modal-title text-danger">Unleash the Power of Nutrition</h5>
-                                {/* Close button with no background positioned at the top right */}
                                 <button
                                     type="button"
                                     onClick={() => setShowModal(false)}
