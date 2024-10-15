@@ -10,5 +10,5 @@ const UserSchema = new mongoose.Schema({
     profilePicture: { type: String }
 });
 
-const User = mongoose.model('users', UserSchema);
+const User = mongoose.model('customers', UserSchema);
 export default User;

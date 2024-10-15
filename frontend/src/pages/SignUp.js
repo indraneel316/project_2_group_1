@@ -4,7 +4,7 @@ import FacebookLogin from 'react-facebook-login';
 import { UserContext } from '../context/userContext';
 import { useNavigate } from 'react-router-dom';
 import './SignIn.css';
-
+import {getApiUrl} from "../util/ApiUrl";
 
 
 const SignUp = () => {
@@ -20,7 +20,8 @@ const SignUp = () => {
         setError('');
 
         try {
-            const response = await axios.post('http://3.131.213.236:5000/auth/users/signup', { username, email, password });
+            const apiUrl = await getApiUrl();
+            const response = await axios.post(`${apiUrl}/auth/users/signup`, { username, email, password });
             setUser(response.data.user);
             navigate('/');
         } catch (error) {

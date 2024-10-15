@@ -22,6 +22,10 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use('/auth/users', userRoutes);
 app.use('/api/users', updateProfile);
 
+app.get('/healthcheck', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
+
 
 
 

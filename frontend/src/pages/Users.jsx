@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import './Users.css';
+import {getApiUrl} from "../util/ApiUrl";
 
 const Users = () => {
     const [userData, setUserData] = useState(null);
@@ -9,7 +10,8 @@ const Users = () => {
 
     const getUserdataFromDB = async (e) => {
         try {
-            const response = await axios.get('http://localhost:5001/api/users/info');
+            const apiUrl = await getApiUrl();
+            const response = await axios.get(`${apiUrl}/api/users/info`);
             setUserData(response.data.users);
             console.log(response.data.users, "user list");
         } catch (error) {

@@ -4,6 +4,8 @@ import FacebookLogin from 'react-facebook-login';
 import { UserContext } from '../context/userContext';
 import { useNavigate } from 'react-router-dom';
 import './SignIn.css';
+import {getApiUrl} from "../util/ApiUrl";
+
 
 
 
@@ -19,7 +21,8 @@ const SignIn = () => {
         setError('');
 
         try {
-            const response = await axios.post('http://3.131.213.236:5000/auth/users/signin', { email, password });
+            const apiUrl = await getApiUrl();
+            const response = await axios.post(`${apiUrl}/auth/users/signin`, { email, password });
 
             sessionStorage.setItem('authToken', response.data.token);
 

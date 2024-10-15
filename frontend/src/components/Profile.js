@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { UserContext } from '../context/userContext';
 import './Profile.css';
+import {getApiUrl} from "../util/ApiUrl";
 
 const Profile = () => {
     const { user, setUser } = useContext(UserContext);
@@ -24,9 +25,9 @@ const Profile = () => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        if (file && file.type.startsWith('image/')) { // Ensure it's an image
+        if (file && file.type.startsWith('image/')) {
             setNewProfilePicture(file);
-            setProfilePicture(URL.createObjectURL(file)); // Preview new profile picture
+            setProfilePicture(URL.createObjectURL(file));
         } else {
             alert('Please select a valid image file.');
         }
@@ -39,8 +40,8 @@ const Profile = () => {
             formData.append('username', name);
             formData.append('email', email);
             if (newProfilePicture) formData.append('profilePicture', newProfilePicture);
-
-            const response = await axios.put('http://3.131.213.236:5000/api/users/profile', formData, {
+            const apiUrl = await getApiUrl();
+            const response = await axios.put(`${apiUrl}/api/users/profile`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
 
