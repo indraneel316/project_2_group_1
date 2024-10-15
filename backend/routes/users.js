@@ -40,5 +40,27 @@ router.put('/profile', upload.single('profilePicture'), async (req, res) => {
 });
 
 
+
+// get all users
+
+
+router.get('/info', async (req, res) => {
+    try {
+        const users = await User.find();
+        if (!users.length) {
+            return res.status(404).json({ message: 'No users found' });
+        }
+        res.status(200).json({ message: 'Users retrieved successfully', users });
+    } catch (error) {
+        console.error('Error retrieving users:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+
+
+
+
 export default router;
 
