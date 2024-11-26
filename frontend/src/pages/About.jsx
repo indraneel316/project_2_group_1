@@ -66,7 +66,7 @@ const About = () => {
                     choices every day with NutriNinja.
                 </p>
                 <p className="text-center mt-4">
-                    <a href="/product" className="btn btn-danger btn-lg">
+                    <a href="/frontend/src/pages/UserPhotos" className="btn btn-danger btn-lg">
                         Explore Our Work
                     </a>
                 </p>

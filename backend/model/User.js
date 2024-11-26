@@ -7,7 +7,8 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     location: { type: String },
     phoneNumber: { type: String },
-    profilePicture: { type: String }
+    profilePicture: { type: String },
+    photos: { type: [String] }
 });
 
 const User = mongoose.model('customers', UserSchema);

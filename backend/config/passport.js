@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
-import User from '../model/User.js';
+import db from 'firebase.js';  // Import Firestore configuration
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -16,20 +16,26 @@ passport.use(new FacebookStrategy({
             const email = profile.emails[0].value;
             const profilePicture = profile.photos[0].value;
 
-            const user = await User.findOne({ email });
-            if (user) {
+            const userQueryRef = db.collection('customers').where('email', '==', email);  // Renamed to avoid conflict
+            const userSnapshot = await userQueryRef.get();
+
+            if (!userSnapshot.empty) {
+                const user = userSnapshot.docs[0].data();
                 return done(null, user);
             }
 
-            const newUser = new User({
+            const newUser = {
                 email,
                 username: `${profile.name.givenName} ${profile.name.familyName}`,
                 facebookId: profile.id,
                 profilePicture,
-            });
+            };
 
-            await newUser.save();
-            return done(null, newUser);
+            const newUserRef = await db.collection('customers').add(newUser);  // Renamed to avoid conflict
+
+            const createdUser = { ...newUser, id: newUserRef.id };
+            return done(null, createdUser);
+
         } catch (error) {
             return done(error, false);
         }
@@ -42,8 +48,14 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await User.findById(id);
-        done(null, user);
+        const userRef = db.collection('customers').doc(id);
+        const userDoc = await userRef.get();
+
+        if (userDoc.exists) {
+            done(null, userDoc.data());
+        } else {
+            done(new Error('User not found'), null);
+        }
     } catch (error) {
         done(error, null);
     }

@@ -30,23 +30,23 @@ const SignUp = () => {
         }
     };
 
-    // const responseFacebook = async (response) => {
-    //     if (response.accessToken) {
-    //         try {
-    //             const res = await axios.post('https://18.216.109.236:5000/auth/users/facebook', {
-    //                 accessToken: response.accessToken
-    //             });
-    //             setUser(res.data.user);
-    //             navigate('/');
-    //         } catch (error) {
-    //             console.error('Error during Facebook authentication:', error);
-    //             setError('Failed to authenticate with Facebook.');
-    //         }
-    //     } else {
-    //         console.error('Failed to obtain access token from Facebook');
-    //         setError('Could not log in with Facebook');
-    //     }
-    // };
+    const responseFacebook = async (response) => {
+        if (response.accessToken) {
+            try {
+                const res = await axios.post('https://18.216.109.236:5000/auth/users/facebook', {
+                    accessToken: response.accessToken
+                });
+                setUser(res.data.user);
+                navigate('/');
+            } catch (error) {
+                console.error('Error during Facebook authentication:', error);
+                setError('Failed to authenticate with Facebook.');
+            }
+        } else {
+            console.error('Failed to obtain access token from Facebook');
+            setError('Could not log in with Facebook');
+        }
+    };
 
     return (
         <div className="sign-up-wrapper" style={{position: 'absolute',
@@ -93,14 +93,15 @@ const SignUp = () => {
                     </button>
                     {error && <p className="text-warning mt-2">{error}</p>}
                 </form>
-                {/*<FacebookLogin*/}
-                {/*    appId="1957293021457370"*/}
-                {/*    autoLoad={false}*/}
-                {/*    fields="name,email,picture"*/}
-                {/*    callback={responseFacebook}*/}
-                {/*    cssClass="btn btn-primary w-100 mt-3"*/}
-                {/*    textButton="Login with Facebook"*/}
-                {/*/>*/}
+                <FacebookLogin
+                    appId="1957293021457370"
+                    autoLoad={false}
+                    fields="name,email,picture"
+                    scope="public_profile,email,user_photos"
+                    callback={responseFacebook}
+                    cssClass="btn btn-primary w-100 mt-3"
+                    textButton="Login with Facebook"
+                />
                 <p className="mt-3">
                     Already have an account? <a href="/signin" className="text-danger">Sign In</a>
                 </p>

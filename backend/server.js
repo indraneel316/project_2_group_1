@@ -5,6 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import userRoutes from './routes/auth.js';
 import updateProfile from './routes/users.js';
+import User from "./model/User.js";
 
 dotenv.config();
 
@@ -19,14 +20,11 @@ mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
 
-app.use('/auth/users', userRoutes);
-app.use('/api/users', updateProfile);
-
-app.get('/healthcheck', (req, res) => {
+app.use('/backend/auth/users', userRoutes);
+app.use('/backend/api/users', updateProfile);
+app.get('/backend/healthcheck', (req, res) => {
     res.status(200).json({ status: 'ok' });
 });
-
-
 
 
 

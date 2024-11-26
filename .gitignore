@@ -13,6 +13,8 @@
 
 # Production
 /build
+/backend/node_modules
+/backend/config/serviceAccountKey.json
 
 
 # Misc

@@ -45,7 +45,7 @@ const NavBar = () => {
                             <Link className="nav-link" to="/about" onClick={handleLinkClick}>About</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/product" onClick={handleLinkClick}>Product</Link>
+                            <Link className="nav-link" to="/product" onClick={handleLinkClick}>Photos</Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/contact" onClick={handleLinkClick}>Contact</Link>

@@ -1,0 +1,56 @@
+body.modal-open {
+    overflow: hidden;
+}
+
+.modal.fade.show {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.modal-dialog-scrollable {
+    max-height: calc(100% - 3.5rem);
+    overflow-y: auto;
+}
+
+.modal-content {
+    background-color: #2c2c2c;
+    color: white;
+    border-radius: 8px;
+}
+
+.card {
+    background-color: red;
+    border: none;
+}
+
+.card-title {
+    color: white;
+}
+
+.consistent-img {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.btn-close {
+    background-color: white;
+    border: none;
+}
+
+.btn-danger, .btn-secondary {
+    border-radius: 20px;
+    padding: 8px 16px;
+}
+
+.recipe-details {
+    background-color: #444;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.recipe-details pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
