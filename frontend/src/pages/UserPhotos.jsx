@@ -17,23 +17,36 @@ const LoadingSpinner = ({ text }) => (
 
 const UserPhotos = () => {
     const { user } = useContext(UserContext);
-    const [photos, setPhotos] = useState([]); // Store photo URLs directly
+    const [photos, setPhotos] = useState([]);
+    const [photoData, setPhotoData] = useState(() => {
+        // Restore photoData from localStorage on initialization
+        const savedPhotoData = localStorage.getItem('photoData');
+        return savedPhotoData ? JSON.parse(savedPhotoData) : {}; // Use saved state or start with an empty object
+    });
     const [error, setError] = useState('');
-    const [selectedPhoto, setSelectedPhoto] = useState(null); // Store selected photo URL
-    const [ingredients, setIngredients] = useState([]);
-    const [showIngredients, setShowIngredients] = useState(false);
+    const [selectedPhoto, setSelectedPhoto] = useState(null); // Currently opened photo
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('photo');
-    const [tabs, setTabs] = useState(['photo']);
     const [customIngredient, setCustomIngredient] = useState('');
     const [diet, setDiet] = useState('');
     const [cuisine, setCuisine] = useState('');
     const [allergens, setAllergens] = useState('');
-    const [recipes, setRecipes] = useState([]);
-    const [selectedRecipe, setSelectedRecipe] = useState(null);
+    const [selectedRecipe, setSelectedRecipe] = useState(null); // Recipe modal
 
 
-// Fetch photo URLs from the server
+
+    // Sync photoData to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('photoData', JSON.stringify(photoData));
+    }, [photoData]);
+
+    useEffect(() => {
+        const savedActiveTab = localStorage.getItem('activeTab');
+        if (savedActiveTab) {
+            setActiveTab(savedActiveTab); // Restore active tab
+        }
+    }, []);
+
     useEffect(() => {
         const fetchPhotos = async () => {
             if (!user || !user.email) {
@@ -48,7 +61,7 @@ const UserPhotos = () => {
                         Authorization: `Bearer ${user.token}`,
                     },
                 });
-                setPhotos(response.data.photos); // Ensure the backend returns photo URLs
+                setPhotos(response.data.photos);
             } catch (err) {
                 setError('Failed to load photos.');
                 console.error('Error fetching photos:', err);
@@ -58,21 +71,35 @@ const UserPhotos = () => {
         fetchPhotos();
     }, [user]);
 
+    /* --- Helper Functions --- */
+
     const handleUploadComplete = (newPhotosArray) => {
-        setPhotos(newPhotosArray); // Update photos state with the new array of URLs
+        setPhotos(newPhotosArray);
         setError('');
     };
 
+
     const handleCardClick = (photo) => {
-        setSelectedPhoto(photo); // Set selected photo as a URL
-        setError('');
+        setSelectedPhoto(photo);
+
+        // Restore previously saved tabs or set default tabs if new
+        setActiveTab(photoData[photo]?.activeTab || 'photo');
+        setPhotoData((prevState) => ({
+            ...prevState,
+            [photo]: {
+                ...prevState[photo],
+                tabs: prevState[photo]?.tabs || ['photo'], // Restore tabs for photo
+            },
+        }));
     };
 
     const handleCloseModal = () => {
         setSelectedPhoto(null);
-        setSelectedRecipe(null);
+        setActiveTab('photo'); // Reset active tab view
         setError('');
     };
+
+    /* --- Ingredient Analysis --- */
 
     const handleAnalyze = async () => {
         if (!selectedPhoto) {
@@ -94,11 +121,11 @@ const UserPhotos = () => {
                             content: [
                                 {
                                     type: 'text',
-                                    text: "Classify the given image as 'dish' or 'ingredient'. If dish: LIST down all the ingredients on how to make the food in the Image. No extra content. If ingredient: give the name. No extra content. Don't give me the classification type either, no extra symbols."
+                                    text: "Classify the given image as 'dish' or 'ingredient'. If dish: LIST down all the ingredients on how to make the food in the Image. No extra content. If ingredient: give the name. No EXTRA CONTENT. Don't give me the classification type either, no extra symbols. "
                                 },
                                 {
                                     type: 'image_url',
-                                    image_url: selectedPhoto // Pass the URL of the selected photo
+                                    image_url: selectedPhoto
                                 }
                             ]
                         }
@@ -106,23 +133,27 @@ const UserPhotos = () => {
                 },
                 {
                     headers: {
-                        Authorization: `Bearer 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`,
+                        Authorization: `Bearer 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`, // Use your valid key
                         'Content-Type': 'application/json',
                     },
                 }
             );
 
             const ingredientsText = response.data.choices[0].message.content;
-            const ingredientsList = ingredientsText
-                .split('\n')
-                .map((item) => item.replace(/[-]*\b(dish|ingredient|ingredients)\b[:]*\s*/gi, '').trim())
+            const ingredientsList = ingredientsText.split('\n')
+                .map((item) => item.trim())
                 .filter(Boolean);
-            setIngredients(ingredientsList || []);
-            setShowIngredients(true);
 
-            if (!tabs.includes('analysis')) {
-                setTabs((prevTabs) => [...prevTabs, 'analysis']);
-            }
+            // Update photoData for the selected photo
+            setPhotoData((prevState) => ({
+                ...prevState,
+                [selectedPhoto]: {
+                    ...prevState[selectedPhoto],
+                    ingredients: ingredientsList, // Overwrite ingredients
+                    tabs: Array.from(new Set([...(prevState[selectedPhoto]?.tabs || []), 'analysis'])), // Ensure "analysis" tab exists
+                    activeTab: 'analysis', // Set active tab to analysis
+                },
+            }));
             setActiveTab('analysis');
         } catch (err) {
             setError('Failed to analyze photo.');
@@ -132,20 +163,47 @@ const UserPhotos = () => {
         }
     };
 
+    /* --- Custom Ingredients --- */
+
     const handleAddIngredient = () => {
-        if (customIngredient) {
-            setIngredients((prevIngredients) => [...prevIngredients, customIngredient]);
+        if (customIngredient && selectedPhoto) {
+            setPhotoData((prevState) => ({
+                ...prevState,
+                [selectedPhoto]: {
+                    ...prevState[selectedPhoto],
+                    ingredients: [
+                        ...(prevState[selectedPhoto]?.ingredients || []),
+                        customIngredient,
+                    ],
+                },
+            }));
             setCustomIngredient('');
         }
     };
 
     const handleRemoveIngredient = (ingredient) => {
-        setIngredients(ingredients.filter((item) => item !== ingredient));
+        if (selectedPhoto) {
+            setPhotoData((prevState) => ({
+                ...prevState,
+                [selectedPhoto]: {
+                    ...prevState[selectedPhoto],
+                    ingredients: prevState[selectedPhoto]?.ingredients?.filter((item) => item !== ingredient),
+                },
+            }));
+        }
     };
 
+    /* --- Recipe Suggestions --- */
+
     const handleGetRecipeSuggestions = async () => {
+        if (!selectedPhoto || !photoData[selectedPhoto]?.ingredients?.length) {
+            setError('No ingredients available to suggest recipes.');
+            return;
+        }
+
         setLoading(true);
-        const allIngredients = [...ingredients, customIngredient].join(', ');
+
+        const allIngredients = photoData[selectedPhoto]?.ingredients.join(', ');
         const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
         try {
@@ -160,56 +218,62 @@ const UserPhotos = () => {
                                 {
                                     type: 'text',
                                     text: `Suggest 5 recipes based on these ingredients: ${allIngredients}. Diet: ${diet}, Cuisine: ${cuisine}, Allergens: ${allergens}. Format the response as a list of recipes. 
-                                Each recipe should have a title and instructions. NO EXTRA CONTENT. Instructions should be line by line and it should start with Step. Start and end your answer according to my format. 
-                                It should be Title: "Title Of The Recipe"
-                                Instructions: `
-                                }
+                                    Each recipe should have a title and instructions. No extra content. Instructions should be line by line and it should start with Step  
+                                    It should be Title: "Title Of The Recipe"
+                                    Instructions: `                                  },
                             ]
                         }
                     ]
                 },
                 {
                     headers: {
-                        Authorization: `Bearer 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`,
+                        Authorization: `Bearer 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`, // Use a valid key
                         'Content-Type': 'application/json',
                     },
                 }
             );
 
             const recipesText = response.data.choices[0].message.content;
-            console.log("TRACK DATA 2 ", recipesText)
             const recipesList = recipesText.split('\n\n').map((recipeText) => {
                 const titleMatch = recipeText.match(/Title:\s*"(.+?)"/);
                 const instructionsMatch = recipeText.match(/Instructions:\s*([\s\S]+)/);
 
                 return {
                     title: titleMatch ? titleMatch[1] : 'Unknown Title',
-                    instructions: instructionsMatch
-                        ? instructionsMatch[1].split(/\n/).filter(Boolean).join('\n')
-                        : 'No instructions available'
+                    instructions: instructionsMatch ? instructionsMatch[1].trim() : 'No instructions available',
                 };
             });
 
-            setRecipes(recipesList);
-
-            if (!tabs.includes('recipe suggestions')) {
-                setTabs((prevTabs) => [...prevTabs, 'recipe suggestions']);
-            }
-
+            // Update photoData for the selected photo
+            setPhotoData((prevState) => ({
+                ...prevState,
+                [selectedPhoto]: {
+                    ...prevState[selectedPhoto],
+                    recipes: recipesList, // Overwrite recipes
+                    tabs: Array.from(new Set([...(prevState[selectedPhoto]?.tabs || []), 'recipe suggestions'])), // Ensure "recipe suggestions" tab exists
+                    activeTab: 'recipe suggestions', // Set active tab to recipes
+                },
+            }));
             setActiveTab('recipe suggestions');
         } catch (err) {
-            console.error('Error fetching recipe suggestions:', err.response?.data || err.message);
+            setError('Failed to fetch recipe suggestions.');
+            console.error('Error fetching recipes:', err.response?.data || err.message);
         } finally {
             setLoading(false);
         }
     };
+
+    /* --- Render Helpers --- */
+    const ingredients = selectedPhoto ? photoData[selectedPhoto]?.ingredients || [] : [];
+    const recipes = selectedPhoto ? photoData[selectedPhoto]?.recipes || [] : [];
+    const tabs = selectedPhoto ? photoData[selectedPhoto]?.tabs || ['photo'] : ['photo'];
 
     return (
         <div className="container">
             <h1 className="text-danger text-center mb-4">Review Your Food Photos</h1>
             {error && <div className="alert alert-danger">{error}</div>}
 
-            {/* Displaying existing or uploaded photos */}
+            {/* List of Photos */}
             <div className="row">
                 {photos.map((photo, index) => (
                     <div className="col-md-4 mb-4 d-flex justify-content-center" key={index}>
@@ -218,7 +282,7 @@ const UserPhotos = () => {
                             onClick={() => handleCardClick(photo)}
                         >
                             <img
-                                src={photo} // Display photo as a URL
+                                src={photo}
                                 alt={`User photo ${index + 1}`}
                                 className="card-img-top consistent-img"
                             />
@@ -230,188 +294,144 @@ const UserPhotos = () => {
                 ))}
             </div>
 
-            {/* OR Separator and Custom Upload */}
-            <h2 className="text-center text-danger mb-3">OR</h2>
-            <CustomUpload onUploadComplete={handleUploadComplete} />
-
-            {/* Selected photo modal */}
+            {/* Modal */}
             {selectedPhoto && (
                 <div
                     className="modal fade show d-block"
                     tabIndex="-1"
-                    onClick={(e) =>
-                        e.target.className.includes('modal') && handleCloseModal()
-                    }
+                    onClick={(e) => e.target.className.includes('modal') && handleCloseModal()}
                 >
                     <div className="modal-dialog modal-dialog-centered modal-scrollable">
                         <div className="modal-content bg-dark text-white">
                             <div className="modal-header">
-                                <h5 className="modal-title">View Photo</h5>
+                                <h5 className="modal-title">Photo Details</h5>
                                 <button className="btn-close" onClick={handleCloseModal}></button>
                             </div>
-
                             <div className="modal-body">
-                                <div className="container">
-                                    <ul className="nav nav-tabs" id="myTab" role="tablist">
-                                        {tabs.map((tab, index) => (
-                                            <li className="nav-item" role="presentation" key={index}>
-                                                <button
-                                                    className={`nav-link ${activeTab === tab ? 'active' : ''}`}
-                                                    onClick={() => setActiveTab(tab)}
-                                                    type="button"
-                                                    role="tab"
-                                                >
-                                                    {tab === 'photo'
-                                                        ? 'View Photo'
-                                                        : tab === 'analysis'
-                                                            ? 'Photo Analysis'
-                                                            : tab === 'recipe suggestions'
-                                                                ? 'Recipe Suggestions'
-                                                                : tab}
-                                                </button>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                {/* Tabs */}
+                                <ul className="nav nav-tabs">
+                                    {tabs.map((tab, index) => (
+                                        <li className="nav-item" key={index}>
+                                            <button
+                                                className={`nav-link ${activeTab === tab ? 'active' : ''}`}
+                                                onClick={() => setActiveTab(tab)}
+                                            >
+                                                {tab === 'photo' ? 'View Photo'
+                                                    : tab === 'analysis' ? 'Photo Analysis'
+                                                        : 'Recipe Suggestions'}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
 
-                                    <div className="tab-content mt-3">
-                                        {loading && (
-                                            <LoadingSpinner
-                                                text={
-                                                    activeTab === 'analysis'
-                                                        ? 'Fetching recipe suggestions...'
-                                                        : 'Analyzing Ingredients In the Photo...'
-                                                }
-                                            />
-                                        )}
-                                        {!loading && (
-                                            <>
-                                                {/* Tab 1: Photo */}
-                                                <div
-                                                    className={`tab-pane fade ${
-                                                        activeTab === 'photo' ? 'show active' : ''
-                                                    }`}
-                                                >
+                                {/* Tab Content */}
+                                <div className="tab-content mt-3">
+                                    {loading && <LoadingSpinner text="Loading..." />}
+                                    {!loading &&
+                                        <>
+                                            {/* Tab: Photo */}
+                                            {activeTab === 'photo' && (
+                                                <div>
                                                     <img
-                                                        src={selectedPhoto} // Use URL for selected photo
+                                                        src={selectedPhoto}
                                                         alt="Selected user photo"
                                                         className="img-fluid mb-3 rounded"
                                                     />
-                                                    <div className="mt-3">
-                                                        <button
-                                                            onClick={handleAnalyze}
-                                                            className="btn btn-danger w-100"
-                                                        >
-                                                            Analyze Photo
-                                                        </button>
-                                                    </div>
+                                                    <button className="btn btn-danger w-100" onClick={handleAnalyze}>
+                                                        Analyze Photo
+                                                    </button>
                                                 </div>
+                                            )}
 
-                                                {/* Tab 2: Analysis */}
-                                                <div
-                                                    className={`tab-pane fade ${
-                                                        activeTab === 'analysis' ? 'show active' : ''
-                                                    }`}
-                                                >
-                                                    {showIngredients && (
+                                            {/* Tab: Analysis */}
+                                            {activeTab === 'analysis' && (
+                                                <div>
+                                                    {ingredients.length > 0 && (
                                                         <>
                                                             <IngredientDetails
                                                                 ingredients={ingredients}
                                                                 onRemoveIngredient={handleRemoveIngredient}
                                                             />
-                                                            <div className="mb-3">
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    value={customIngredient}
-                                                                    onChange={(e) =>
-                                                                        setCustomIngredient(e.target.value)
-                                                                    }
-                                                                    placeholder="Add custom ingredient"
-                                                                />
-                                                                <button
-                                                                    onClick={handleAddIngredient}
-                                                                    className="btn btn-secondary mt-2 w-100"
-                                                                >
-                                                                    Add Ingredient
-                                                                </button>
-                                                            </div>
-                                                            <div className="mb-3">
-                                                                <label className="form-label">Diet</label>
-                                                                <select
-                                                                    className="form-select"
-                                                                    value={diet}
-                                                                    onChange={(e) =>
-                                                                        setDiet(e.target.value)
-                                                                    }
-                                                                >
-                                                                    <option value="">None</option>
-                                                                    <option value="vegetarian">Vegetarian</option>
-                                                                    <option value="vegan">Vegan</option>
-                                                                    <option value="gluten free">Gluten Free</option>
-                                                                    <option value="ketogenic">Ketogenic</option>
-                                                                </select>
-                                                            </div>
-                                                            <div className="mb-3">
-                                                                <label className="form-label">Cuisine</label>
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    value={cuisine}
-                                                                    onChange={(e) =>
-                                                                        setCuisine(e.target.value)
-                                                                    }
-                                                                    placeholder="Cuisine Type"
-                                                                />
-                                                            </div>
-                                                            <div className="mb-3">
-                                                                <label className="form-label">Allergens</label>
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    value={allergens}
-                                                                    onChange={(e) =>
-                                                                        setAllergens(e.target.value)
-                                                                    }
-                                                                    placeholder="Allergens"
-                                                                />
+                                                            <input
+                                                                type="text"
+                                                                className="form-control"
+                                                                placeholder="Add custom ingredient"
+                                                                value={customIngredient}
+                                                                onChange={(e) => setCustomIngredient(e.target.value)}
+                                                            />
+                                                            <button
+                                                                className="btn btn-secondary mt-2 w-100"
+                                                                onClick={handleAddIngredient}
+                                                            >
+                                                                Add Ingredient
+                                                            </button>
+                                                            <hr />
+                                                            {/* Recipe Filters */}
+                                                            <div className="row">
+                                                                <div className="col-md-4">
+                                                                    <label>Diet</label>
+                                                                    <select
+                                                                        className="form-select"
+                                                                        value={diet}
+                                                                        onChange={(e) => setDiet(e.target.value)}
+                                                                    >
+                                                                        <option value="">None</option>
+                                                                        <option value="vegetarian">Vegetarian</option>
+                                                                        <option value="vegan">Vegan</option>
+                                                                        <option value="gluten free">Gluten Free</option>
+                                                                        <option value="ketogenic">Ketogenic</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div className="col-md-4">
+                                                                    <label>Cuisine</label>
+                                                                    <input
+                                                                        type="text"
+                                                                        className="form-control"
+                                                                        placeholder="Cuisine Type"
+                                                                        value={cuisine}
+                                                                        onChange={(e) => setCuisine(e.target.value)}
+                                                                    />
+                                                                </div>
+                                                                <div className="col-md-4">
+                                                                    <label>Allergens</label>
+                                                                    <input
+                                                                        type="text"
+                                                                        className="form-control"
+                                                                        placeholder="Allergens"
+                                                                        value={allergens}
+                                                                        onChange={(e) => setAllergens(e.target.value)}
+                                                                    />
+                                                                </div>
                                                             </div>
                                                             <button
+                                                                className="btn btn-danger mt-3 w-100"
                                                                 onClick={handleGetRecipeSuggestions}
-                                                                className="btn btn-danger w-100"
                                                             >
                                                                 Get Recipe Suggestions
                                                             </button>
                                                         </>
                                                     )}
                                                 </div>
+                                            )}
 
-                                                {/* Tab 3: Recipe Suggestions */}
-                                                <div
-                                                    className={`tab-pane fade ${
-                                                        activeTab === 'recipe suggestions'
-                                                            ? 'show active'
-                                                            : ''
-                                                    }`}
-                                                >
-                                                    {recipes.map(
-                                                        (recipe, index) =>
-                                                            recipe.title !== 'Unknown Title' && (
-                                                                <div
-                                                                    key={index}
-                                                                    className="p-3 bg-danger text-white rounded mb-3"
-                                                                    style={{ cursor: 'pointer' }}
-                                                                    onClick={() =>
-                                                                        setSelectedRecipe(recipe)
-                                                                    }
-                                                                >
-                                                                    {recipe.title}
-                                                                </div>
-                                                            )
-                                                    )}
+                                            {/* Tab: Recipe Suggestions */}
+                                            {activeTab === 'recipe suggestions' && (
+                                                <div>
+                                                    {recipes.map((recipe, index) => (
+                                                        recipe.title !== 'Unknown Title' &&
+                                                        <div
+                                                            key={index}
+                                                            className="p-3 bg-danger text-white rounded mb-3"
+                                                            style={{ cursor: 'pointer' }}
+                                                            onClick={() => setSelectedRecipe(recipe)}
+                                                        >
+                                                            <strong>{recipe.title}</strong>
+                                                        </div>
+                                                    ))}
                                                 </div>
-                                            </>
-                                        )}
-                                    </div>
+                                            )}
+                                        </>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -419,41 +439,38 @@ const UserPhotos = () => {
                 </div>
             )}
 
-            {/* Recipe Modal */}
+            {/* Recipe Details Modal */}
             {selectedRecipe && (
                 <div
                     className="modal fade show d-block"
                     tabIndex="-1"
-                    onClick={(e) =>
-                        e.target.className.includes('modal') && setSelectedRecipe(null)
-                    }
+                    onClick={(e) => e.target.className.includes('modal') && setSelectedRecipe(null)}
                 >
-                    <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-dialog modal-dialog-centered modal-scrollable">
                         <div className="modal-content bg-dark text-white">
                             <div className="modal-header">
                                 <h5 className="modal-title">{selectedRecipe.title}</h5>
-                                <button
-                                    onClick={() => setSelectedRecipe(null)}
-                                    className="btn-close"
-                                ></button>
+                                <button className="btn-close" onClick={() => setSelectedRecipe(null)}></button>
                             </div>
                             <div className="modal-body">
-                                <ol className="ps-3">
-                                    {selectedRecipe.instructions
-                                        .split(/Step \d+:/)
-                                        .filter(Boolean)
-                                        .map((instruction, index) => (
-                                            <p key={index} className="mb-2">
-                                                <b>Step {index + 1}: </b>
-                                                {instruction.trim()}
-                                            </p>
-                                        ))}
-                                </ol>
+
+                                {selectedRecipe.instructions
+                                    .split(/(?:Step\s+[0-9]+:\s*)/i) // Splitting based on "Step X:" pattern
+                                    .filter(Boolean) // Removing empty matches
+                                    .map((instruction, index) => (
+                                        <p key={index}>
+                                            <b>Step {index + 1}: </b> {instruction.trim()} {/* Adding "Step X:" dynamically */}
+                                        </p>
+                                    ))}
+
                             </div>
                         </div>
                     </div>
                 </div>
             )}
+
+            <CustomUpload onUploadComplete={handleUploadComplete} />
+
         </div>
     );
 };
