@@ -3,6 +3,7 @@ import multer from 'multer';
 import { uploadToS3 } from '../config/s3Config.js';
 import db from '../config/firebase.js';  // Firestore initialization
 import dotenv from 'dotenv';
+import {isFoodImage} from "../middleware/filterFoodPhotos.js";
 
 dotenv.config();
 const router = express.Router();
@@ -80,7 +81,6 @@ router.get('/photos', async (req, res) => {
 
         const user = snapshot.docs[0].data();
 
-        // Send back the photo details (e.g., URLs or other info)
         res.status(200).json({
             photos: user.photos || [],  // Assuming `photos` is an array of photo URLs or photo objects
         });
@@ -90,4 +90,61 @@ router.get('/photos', async (req, res) => {
     }
 });
 
+router.put("/add-photo/:email", upload.single("photo"), async (req, res) => {
+    const { email } = req.params; // Extract email from the request params
+
+    try {
+        if (!email) {
+            return res.status(400).json({ message: "Email is required in the URL params." });
+        }
+
+        // Ensure that a file (photo) was uploaded
+        if (!req.file) {
+            return res.status(400).json({ message: "A photo file must be uploaded." });
+        }
+
+        // Convert the uploaded photo to Base64
+        const base64Photo = req.file.buffer.toString("base64");
+
+
+
+        // Find the user by email and update the `photos` array
+        const customerRef = db.collection("customers");
+        const snapshot = await customerRef.where("email", "==", email).get();
+
+        if (snapshot.empty) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        if(await isFoodImage(base64Photo)) {
+
+        const userDoc = snapshot.docs[0]; // Get the user's document
+        const userId = userDoc.id;
+
+
+        const s3Url = await uploadToS3(req.file.originalname, req.file.buffer)
+
+        const userData = userDoc.data();
+        const updatedPhotos = userData.photos ? [...userData.photos, s3Url] : [s3Url];
+        console.log("TRACK DATA 1 ", updatedPhotos.length);
+
+        await customerRef.doc(userId).update({ photos: updatedPhotos });
+
+        res.status(200).json({
+            message: "Photo successfully added to user's photos array.",
+            photos: updatedPhotos,
+        });
+    }
+
+        else {
+            res.status(400).json({
+                message: "Invalid Photo",
+            });
+        }
+
+    } catch (error) {
+        console.error("Error adding photo to user's Firestore document:", error);
+        return res.status(500).json({ error: "Failed to add photo." });
+    }
+});
 export default router;

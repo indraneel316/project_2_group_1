@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { v4 as uuidv4 } from 'uuid';
+import {uploadToS3} from "../config/s3Config.js";
 
 const visionClient = new ImageAnnotatorClient();
 
@@ -38,47 +39,85 @@ function convertImageToBase64(filePath) {
     return imageBuffer.toString('base64');
 }
 
-/**
- * Filters an array of photo URLs to return only food-related photos using Google Vision API.
- * @param {string[]} photoUrls - An array of photo URLs.
- * @returns {Promise<{foodPhotos: string[], base64Images: string[]}>} - A promise that resolves to food photo URLs and Base64 strings.
- */
-async function filterFoodPhotos(photoUrls) {
-    const base64Images = [];
 
-    const individualRequests = photoUrls.map(async (photoUrl) => {
+ export async function isFoodImage(input) {
+    let fileContent; // Buffer containing the image content
+
+    try {
+        if (input.startsWith('http')) {
+            // Input is a URL, so download the image content
+            const filePath = await downloadImage(input);
+            fileContent = fs.readFileSync(filePath); // Read image as buffer
+            fs.unlinkSync(filePath); // Delete the local file after reading
+        } else {
+            // Input is a Base64 string, decode into a buffer
+            fileContent = Buffer.from(input, 'base64');
+        }
+
+        // Call Google Vision API with the image content (buffer)
+        const [result] = await visionClient.labelDetection({ image: { content: fileContent } });
+
+        if (!result.labelAnnotations || result.labelAnnotations.length === 0) {
+            console.log('No labels found for image.');
+            return false; // No labels, so not a food image
+        }
+
+        // Extract label descriptions
+        const labels = result.labelAnnotations.map((label) => label.description.toLowerCase());
+
+        // Define food-related keywords
+        const foodKeywords = [
+            'food', 'dish', 'meal', 'cuisine', 'snack', 'dessert',
+            'breakfast', 'lunch', 'dinner', 'recipe', 'fruit',
+            'vegetable', 'ingredient',
+        ];
+
+        // Check if any label matches a food keyword
+        const isFood = labels.some((label) => foodKeywords.includes(label));
+        return isFood;
+    } catch (error) {
+        console.error('Error detecting labels for image:', error);
+        return false; // If an error occurs, assume not a food image
+    }
+}
+
+
+
+export default async function filterFoodPhotos(photoInputs) {
+    const s3Urls = [];
+
+    const individualRequests = photoInputs.map(async (photoInput) => {
         try {
-            const filePath = await downloadImage(photoUrl);
-
-            const [result] = await visionClient.labelDetection({ image: { content: fs.readFileSync(filePath) } });
-
-            if (!result.labelAnnotations || result.labelAnnotations.length === 0) {
-                console.log("Empty labels for image:", photoUrl);
-                fs.unlinkSync(filePath); // Clean up after processing
-                return;
-            }
-
-            const labels = result.labelAnnotations.map(label => label.description.toLowerCase());
-
-            const isFood = labels.some(label =>
-                ['food', 'dish', 'meal', 'cuisine', 'snack', 'dessert', 'breakfast', 'lunch', 'dinner', 'recipe', 'fruit', 'vegetable', 'ingredient'].includes(label)
-            );
+            // Check if the photo is food-related
+            const isFood = await isFoodImage(photoInput);
 
             if (isFood) {
-                const base64Image = convertImageToBase64(filePath);
-                base64Images.push(base64Image);
-            }
+                let fileBuffer;
+                let filePath;
 
-            fs.unlinkSync(filePath);
+                if (photoInput.startsWith('http')) {
+                    // Input is a URL, download the file
+                    filePath = await downloadImage(photoInput);
+                    fileBuffer = fs.readFileSync(filePath); // Read file into a buffer
+                    fs.unlinkSync(filePath); // Clean up after reading
+                } else {
+                    // Input is a Base64 string, decode into a buffer
+                    fileBuffer = Buffer.from(photoInput, 'base64');
+                }
+
+                // Upload the file to S3
+                const uniqueFileName = `food-photos/${uuidv4()}.jpg`; // Generate unique S3 path
+                const s3Url = await uploadToS3(uniqueFileName, fileBuffer); // Upload to S3
+                s3Urls.push(s3Url);
+            }
         } catch (error) {
-            console.error(`Error processing image at ${photoUrl}:`, error);
-            // You could capture and log the specific error and URL for debugging
+            console.error('Error processing photo input:', error);
         }
     });
 
+    // Wait for all photos to be processed
     await Promise.all(individualRequests);
 
-    return base64Images;
+    return s3Urls;
 }
 
-export default filterFoodPhotos;

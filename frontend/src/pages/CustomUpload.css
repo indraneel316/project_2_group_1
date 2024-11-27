@@ -1,0 +1,11 @@
+.custom-upload {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.upload-preview {
+    max-width: 100%;
+    height: auto;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+}

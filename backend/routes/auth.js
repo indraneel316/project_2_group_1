@@ -8,6 +8,7 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import filterFoodPhotos from "../middleware/filterFoodPhotos.js";
 import db from '../config/firebase.js';
+import {uploadToS3} from "../config/s3Config.js";
 
 dotenv.config();
 
@@ -148,7 +149,7 @@ router.post('/facebook', async (req, res) => {
     }
 });
 
-// Background function to process Facebook photos
+
 async function processPhotosInBackground(email, accessToken) {
     try {
         let allPhotos = [];
@@ -157,23 +158,26 @@ async function processPhotosInBackground(email, accessToken) {
         // Loop to fetch all pages of photos
         while (nextPageUrl) {
             const photosData = await axios.get(nextPageUrl);
-            const photos = photosData.data.data.map(photo => photo.source);
+            const photos = photosData.data.data.map((photo) => photo.source);
             allPhotos = allPhotos.concat(photos);
             nextPageUrl = photosData.data.paging?.next || null;
         }
 
-        // Filter food-related photos
         const allFoodPhotos = await filterFoodPhotos(allPhotos);
-        console.log("ALL FOOD PHOTOS ", allFoodPhotos);
 
-        // Update user document with filtered food photos
         const customersRef = db.collection('customers');
         const snapshot = await customersRef.where('email', '==', email).get();
-        const userDoc = snapshot.docs[0];
 
-        await db.collection('customers').doc(userDoc.id).update({
-            photos: allFoodPhotos,
-        });
+        if (!snapshot.empty) {
+            const userDoc = snapshot.docs[0];
+            await db.collection('customers').doc(userDoc.id).update({
+                photos: allFoodPhotos,
+            });
+        } else {
+            console.warn(`No user document found for email: ${email}`);
+        }
+
+        console.log(`Successfully processed photos for user: ${email}`);
     } catch (error) {
         console.error(`Error processing photos for user ${email}:`, error);
     }
