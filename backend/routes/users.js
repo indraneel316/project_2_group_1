@@ -134,7 +134,6 @@ router.put("/add-photo/:email", upload.single("photo"), async (req, res) => {
             // Check if the URL already exists in Firestore
             if (!currentPhotos.includes(s3Url)) {
                 const updatedPhotos = [...currentPhotos, s3Url];
-                console.log("TRACK DATA 1 ", updatedPhotos.length);
 
                 await customerRef.doc(userId).update({ photos: updatedPhotos });
 
@@ -164,11 +163,9 @@ router.post('/save-results', async (req, res) => {
     const { email, photoData } = req.body;
 
 
-    console.log("PHOTO DATA ", photoData)
-
     try {
-        if (!email || !photoData) {
-            return res.status(400).json({ message: 'Email and photoData are required.' });
+        if (!email || typeof photoData !== 'object' || Array.isArray(photoData)) {
+            return res.status(400).json({ message: 'Email and a valid photoData object are required.' });
         }
 
         const photoResultsRef = db.collection('photoResults');
@@ -176,35 +173,25 @@ router.post('/save-results', async (req, res) => {
         // Check if the user already has a photoResults document
         const snapshot = await photoResultsRef.where('email', '==', email).get();
 
-        let docRef;
         if (snapshot.empty) {
-            const newPhotoResult = {
-                email,
-                photoData: [photoData], // Initialize photoData as an array if it's the first entry
-            };
-            docRef = await photoResultsRef.add(newPhotoResult);
+            // Create a new document with the photo data
+            await photoResultsRef.add({ email, photoData });
+            return res.status(201).json({ message: 'Photo data saved successfully.' });
         } else {
-            // Update the existing document
+            // Update existing document with new photo data
             const existingDoc = snapshot.docs[0];
             const existingData = existingDoc.data();
 
-            // Ensure photoData is an array before calling .concat()
-            const updatedPhotoData = Array.isArray(existingData.photoData)
-                ? existingData.photoData.concat(photoData)
-                : [photoData]; // Initialize as an array if it's not already
+            // Merge new photoData with existing data
+            // Ensure photoData is an object of objects, preserving existing keys and updating data
+            const updatedPhotoData = {
+                ...existingData.photoData,
+                ...photoData
+            };
 
-            await photoResultsRef.doc(existingDoc.id).update({
-                photoData: updatedPhotoData,
-                createdAt: new Date(),
-            });
-
-            docRef = existingDoc.ref; // Use the existing document reference
+            await existingDoc.ref.update({ photoData: updatedPhotoData });
+            return res.status(200).json({ message: 'Photo data updated successfully.' });
         }
-
-        return res.status(201).json({
-            message: 'Photo data saved successfully.',
-            photoResult: { id: docRef.id, email, photoData },
-        });
     } catch (error) {
         console.error('Error saving photo data:', error);
         return res.status(500).json({ error: 'Failed to save photo data.' });
@@ -213,8 +200,9 @@ router.post('/save-results', async (req, res) => {
 
 
 
-router.get('/retrieve-results/:email', async (req, res) => {
-    const { email }  = req.params;
+router.get('/retrieve-results', async (req, res) => {
+    const { email }  = req.query;
+
 
     try {
         if (!email) {
@@ -222,18 +210,14 @@ router.get('/retrieve-results/:email', async (req, res) => {
         }
 
         const photoResultsRef = db.collection('photoResults');
-
         const snapshot = await photoResultsRef.where('email', '==', email).get();
 
         if (snapshot.empty) {
-            return res.status(404).json({ message: `No photo data found for email: ${email}` });
+            return res.status(500).json({ message: `No photo data found for email: ${email}` });
         }
 
-        const photoData = snapshot.docs.map(doc => doc.data().results);  // Return only the `results` field
-        console.log("TRACK DATA 1", photoData);
-        return res.status(200).json({
-            photoData
-        });
+        const photoData = snapshot.docs.map(doc => doc.data().photoData); // Adjust according to stored field name
+        return res.status(200).json({ photoData });
     } catch (error) {
         console.error('Error retrieving photo data:', error);
         return res.status(500).json({ error: 'Failed to retrieve photo data.' });

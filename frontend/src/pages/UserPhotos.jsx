@@ -18,42 +18,24 @@ const LoadingSpinner = ({ text }) => (
 const UserPhotos = () => {
     const { user } = useContext(UserContext);
     const [photos, setPhotos] = useState([]);
-    const [photoData, setPhotoData] = useState(() => {
-        // Restore photoData from localStorage on initialization
-        const savedPhotoData = localStorage.getItem('photoData');
-        return savedPhotoData ? JSON.parse(savedPhotoData) : {};
-    });
+    const [photoData, setPhotoData] = useState({});
     const [error, setError] = useState('');
-    const [selectedPhoto, setSelectedPhoto] = useState(null); // Currently opened photo
+    const [selectedPhotoUrl, setSelectedPhotoUrl] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState('photo');
     const [customIngredient, setCustomIngredient] = useState('');
     const [diet, setDiet] = useState('');
     const [cuisine, setCuisine] = useState('');
     const [allergens, setAllergens] = useState('');
-    const [selectedRecipe, setSelectedRecipe] = useState(null); // Recipe modal
+    const [selectedRecipe, setSelectedRecipe] = useState(null);
+    const [activeTab, setActiveTab] = useState('photo');
 
-
-
-    // Sync photoData to localStorage whenever it changes
-    useEffect(() => {
-        localStorage.setItem('photoData', JSON.stringify(photoData));
-    }, [photoData]);
-
-    useEffect(() => {
-        const savedActiveTab = localStorage.getItem('activeTab');
-        if (savedActiveTab) {
-            setActiveTab(savedActiveTab); // Restore active tab
-        }
-    }, []);
-
+    // Fetch photos on component mount
     useEffect(() => {
         const fetchPhotos = async () => {
             if (!user || !user.email) {
                 setError('User email is missing.');
                 return;
             }
-
             try {
                 const response = await axios.get('http://localhost:5000/backend/api/users/photos', {
                     params: { email: user.email },
@@ -71,7 +53,42 @@ const UserPhotos = () => {
         fetchPhotos();
     }, [user]);
 
-    /* --- Helper Functions --- */
+    // Fetch existing photo data from backend
+    useEffect(() => {
+        const fetchSavedPhotoData = async () => {
+            if (!user || !user.email) return;
+            try {
+                const response = await axios.get('http://localhost:5000/backend/api/users/retrieve-results', {
+                    params: { email: user.email },
+                    headers: {
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                });
+
+                if (response.status === 200 && response.data.photoData) {
+                    // Initialize photoData state with existing results
+                    setPhotoData(response.data.photoData[0]); // Assuming correct structured response
+                } else {
+                    setPhotoData({});
+                }
+            } catch (err) {
+                console.error('Error fetching saved photo data:', err);
+            }
+        };
+
+        fetchSavedPhotoData();
+    }, [user]);
+
+    // Update local photoData with url as key
+    const updatePhotoData = (photoUrl, update) => {
+        setPhotoData((prevState) => ({
+            ...prevState,
+            [photoUrl]: {
+                ...prevState[photoUrl],
+                ...update,
+            },
+        }));
+    };
 
     const handleUploadComplete = (newPhotosArray) => {
         setPhotos(newPhotosArray);
@@ -79,7 +96,7 @@ const UserPhotos = () => {
     };
 
     const handleSave = async () => {
-        if (!user || !photoData) {
+        if (!user || !Object.keys(photoData).length) {
             setError('No photo or user information available.');
             return;
         }
@@ -87,9 +104,8 @@ const UserPhotos = () => {
         try {
             const dataToSend = {
                 email: user.email,
-                photoData: photoData
+                photoData,
             };
-
             const response = await axios.post('http://localhost:5000/backend/api/users/save-results', dataToSend, {
                 headers: {
                     Authorization: `Bearer ${user.token}`,
@@ -97,9 +113,9 @@ const UserPhotos = () => {
                 },
             });
 
-            if (response.status === 201) {
+            if (response.status >= 200 && response.status < 300) {
                 setError('');
-                handleCloseModal(); // Close modal on successful save
+                handleCloseModal();
             } else {
                 setError('Failed to save photo data.');
             }
@@ -109,36 +125,22 @@ const UserPhotos = () => {
         }
     };
 
-
-
-    const handleCardClick = (photo) => {
-        setSelectedPhoto(photo);
-
-        // Restore previously saved tabs or set default tabs if new
-        setActiveTab(photoData[photo]?.activeTab || 'photo');
-        setPhotoData((prevState) => ({
-            ...prevState,
-            [photo]: {
-                ...prevState[photo],
-                tabs: prevState[photo]?.tabs || ['photo'],
-            },
-        }));
+    const handleCardClick = (photoUrl) => {
+        setSelectedPhotoUrl(photoUrl);
+        setActiveTab(photoData[photoUrl]?.activeTab || 'photo');
     };
 
     const handleCloseModal = () => {
-        setSelectedPhoto(null);
+        setSelectedPhotoUrl(null);
         setActiveTab('photo');
         setError('');
     };
 
-    /* --- Ingredient Analysis --- */
-
     const handleAnalyze = async () => {
-        if (!selectedPhoto) {
+        if (!selectedPhotoUrl) {
             setError('No photo selected.');
             return;
         }
-
         setLoading(true);
 
         const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
@@ -153,11 +155,11 @@ const UserPhotos = () => {
                             content: [
                                 {
                                     type: 'text',
-                                    text: "Classify the given image as 'dish' or 'ingredient'. If dish: LIST down all the ingredients on how to make the food in the Image. No extra content. If ingredient: give the name. No EXTRA CONTENT. Don't give me the classification type either, no extra symbols. "
+                                    text: "Classify the given image as 'dish' or 'ingredient'. If dish: LIST down all the ingredients on how to make the food in the Image. No extra content. If ingredient: give the name. No EXTRA CONTENT. Don't give me the classification type either, no extra symbols."
                                 },
                                 {
                                     type: 'image_url',
-                                    image_url: selectedPhoto
+                                    image_url: selectedPhotoUrl
                                 }
                             ]
                         }
@@ -165,27 +167,25 @@ const UserPhotos = () => {
                 },
                 {
                     headers: {
-                        Authorization: `Bearer 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`, // Use your valid key
+                        Authorization: `Bearer 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`,
                         'Content-Type': 'application/json',
                     },
                 }
             );
 
             const ingredientsText = response.data.choices[0].message.content;
-            const ingredientsList = ingredientsText.split('\n')
-                .map((item) => item.trim())
-                .filter(Boolean);
+            const ingredientsList = ingredientsText.split('\n').map((item) => item.trim()).filter(Boolean);
 
-            // Update photoData for the selected photo
-            setPhotoData((prevState) => ({
-                ...prevState,
-                [selectedPhoto]: {
-                    ...prevState[selectedPhoto],
-                    ingredients: ingredientsList, // Overwrite ingredients
-                    tabs: Array.from(new Set([...(prevState[selectedPhoto]?.tabs || []), 'analysis'])), // Ensure "analysis" tab exists
-                    activeTab: 'analysis', // Set active tab to analysis
-                },
-            }));
+            // Update the photoData to include 'photo' in tabs
+            updatePhotoData(selectedPhotoUrl, {
+                ingredients: ingredientsList,
+                tabs: Array.from(new Set([
+                    'photo', // Ensure 'photo' is always included
+                    ...(photoData[selectedPhotoUrl]?.tabs || []),
+                    'analysis'
+                ])),
+                activeTab: 'analysis',
+            });
             setActiveTab('analysis');
         } catch (err) {
             setError('Failed to analyze photo.');
@@ -195,49 +195,39 @@ const UserPhotos = () => {
         }
     };
 
-    /* --- Custom Ingredients --- */
+
+
+
 
     const handleAddIngredient = () => {
-        if (customIngredient && selectedPhoto) {
-            setPhotoData((prevState) => ({
-                ...prevState,
-                [selectedPhoto]: {
-                    ...prevState[selectedPhoto],
-                    ingredients: [
-                        ...(prevState[selectedPhoto]?.ingredients || []),
-                        customIngredient,
-                    ],
-                },
-            }));
+        if (customIngredient && selectedPhotoUrl) {
+            updatePhotoData(selectedPhotoUrl, {
+                ingredients: [
+                    ...(photoData[selectedPhotoUrl]?.ingredients || []),
+                    customIngredient,
+                ],
+            });
             setCustomIngredient('');
         }
     };
 
     const handleRemoveIngredient = (ingredient) => {
-        if (selectedPhoto) {
-            setPhotoData((prevState) => ({
-                ...prevState,
-                [selectedPhoto]: {
-                    ...prevState[selectedPhoto],
-                    ingredients: prevState[selectedPhoto]?.ingredients?.filter((item) => item !== ingredient),
-                },
-            }));
+        if (selectedPhotoUrl) {
+            updatePhotoData(selectedPhotoUrl, {
+                ingredients: photoData[selectedPhotoUrl]?.ingredients?.filter((i) => i !== ingredient),
+            });
         }
     };
 
-    /* --- Recipe Suggestions --- */
-
     const handleGetRecipeSuggestions = async () => {
-        if (!selectedPhoto || !photoData[selectedPhoto]?.ingredients?.length) {
+        if (!selectedPhotoUrl || !photoData[selectedPhotoUrl]?.ingredients?.length) {
             setError('No ingredients available to suggest recipes.');
             return;
         }
 
         setLoading(true);
-
-        const allIngredients = photoData[selectedPhoto]?.ingredients.join(', ');
+        const allIngredients = photoData[selectedPhotoUrl]?.ingredients.join(', ');
         const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-
         try {
             const response = await axios.post(
                 API_URL,
@@ -249,17 +239,15 @@ const UserPhotos = () => {
                             content: [
                                 {
                                     type: 'text',
-                                    text: `Suggest 5 recipes based on these ingredients: ${allIngredients}. Diet: ${diet}, Cuisine: ${cuisine}, Allergens: ${allergens}. Format the response as a list of recipes. 
-                                    Each recipe should have a title and instructions. No extra content. Instructions should be line by line and it should start with Step  
-                                    It should be Title: "Title Of The Recipe"
-                                    Instructions: `                                  },
+                                    text: `Suggest 5 recipes based on these ingredients: ${allIngredients}. Diet: ${diet}, Cuisine: ${cuisine}, Allergens: ${allergens}. Format the response as a list of recipes. Each recipe should have a title and instructions. No extra content. Instructions should be line by line and it should start with Step. It should be Title: "Title Of The Recipe" Instructions: `
+                                },
                             ]
                         }
                     ]
                 },
                 {
                     headers: {
-                        Authorization: `Bearer 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`, // Use a valid key
+                        Authorization: `Bearer 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`,
                         'Content-Type': 'application/json',
                     },
                 }
@@ -269,23 +257,17 @@ const UserPhotos = () => {
             const recipesList = recipesText.split('\n\n').map((recipeText) => {
                 const titleMatch = recipeText.match(/Title:\s*"(.+?)"/);
                 const instructionsMatch = recipeText.match(/Instructions:\s*([\s\S]+)/);
-
                 return {
                     title: titleMatch ? titleMatch[1] : 'Unknown Title',
                     instructions: instructionsMatch ? instructionsMatch[1].trim() : 'No instructions available',
                 };
             });
 
-            // Update photoData for the selected photo
-            setPhotoData((prevState) => ({
-                ...prevState,
-                [selectedPhoto]: {
-                    ...prevState[selectedPhoto],
-                    recipes: recipesList, // Overwrite recipes
-                    tabs: Array.from(new Set([...(prevState[selectedPhoto]?.tabs || []), 'recipe suggestions'])), // Ensure "recipe suggestions" tab exists
-                    activeTab: 'recipe suggestions', // Set active tab to recipes
-                },
-            }));
+            updatePhotoData(selectedPhotoUrl, {
+                recipes: recipesList,
+                tabs: Array.from(new Set([...(photoData[selectedPhotoUrl]?.tabs || []), 'recipe suggestions'])),
+                activeTab: 'recipe suggestions',
+            });
             setActiveTab('recipe suggestions');
         } catch (err) {
             setError('Failed to fetch recipe suggestions.');
@@ -295,10 +277,10 @@ const UserPhotos = () => {
         }
     };
 
-    /* --- Render Helpers --- */
-    const ingredients = selectedPhoto ? photoData[selectedPhoto]?.ingredients || [] : [];
-    const recipes = selectedPhoto ? photoData[selectedPhoto]?.recipes || [] : [];
-    const tabs = selectedPhoto ? photoData[selectedPhoto]?.tabs || ['photo'] : ['photo'];
+    const selectedPhotoData = selectedPhotoUrl ? photoData[selectedPhotoUrl] || {} : {};
+    const ingredients = selectedPhotoData.ingredients || [];
+    const recipes = selectedPhotoData.recipes || [];
+    const tabs = selectedPhotoData.tabs || ['photo'];
 
     return (
         <div className="container">
@@ -307,14 +289,14 @@ const UserPhotos = () => {
 
             {/* List of Photos */}
             <div className="row">
-                {photos.map((photo, index) => (
+                {photos.map((photoUrl, index) => (
                     <div className="col-md-4 mb-4 d-flex justify-content-center" key={index}>
                         <div
                             className="card bg-danger text-white h-100 shadow"
-                            onClick={() => handleCardClick(photo)}
+                            onClick={() => handleCardClick(photoUrl)}
                         >
                             <img
-                                src={photo}
+                                src={photoUrl}
                                 alt={`User photo ${index + 1}`}
                                 className="card-img-top consistent-img"
                             />
@@ -327,7 +309,7 @@ const UserPhotos = () => {
             </div>
 
             {/* Modal */}
-            {selectedPhoto && (
+            {selectedPhotoUrl && (
                 <div
                     className="modal fade show d-block"
                     tabIndex="-1"
@@ -365,7 +347,7 @@ const UserPhotos = () => {
                                             {activeTab === 'photo' && (
                                                 <div>
                                                     <img
-                                                        src={selectedPhoto}
+                                                        src={selectedPhotoUrl}
                                                         alt="Selected user photo"
                                                         className="img-fluid mb-3 rounded"
                                                     />
@@ -397,7 +379,7 @@ const UserPhotos = () => {
                                                             >
                                                                 Add Ingredient
                                                             </button>
-                                                            <hr/>
+                                                            <hr />
                                                             {/* Recipe Filters */}
                                                             <div className="row">
                                                                 <div className="col-md-4">
@@ -454,18 +436,17 @@ const UserPhotos = () => {
                                                         <div
                                                             key={index}
                                                             className="p-3 bg-danger text-white rounded mb-3"
-                                                            style={{cursor: 'pointer'}}
+                                                            style={{ cursor: 'pointer' }}
                                                             onClick={() => setSelectedRecipe(recipe)}
                                                         >
                                                             <strong>{recipe.title}</strong>
                                                         </div>
                                                     ))}
+                                                    <div className="d-flex justify-content-between mt-4">
+                                                        <button className="btn btn-success" onClick={handleSave}>Save</button>
+                                                    </div>
                                                 </div>
                                             )}
-                                            <div className="d-flex justify-content-between mt-4">
-                                                <button className="btn btn-success" onClick={handleSave}>Save</button>
-                                            </div>
-
                                         </>
                                     }
                                 </div>
@@ -489,16 +470,14 @@ const UserPhotos = () => {
                                 <button className="btn-close" onClick={() => setSelectedRecipe(null)}></button>
                             </div>
                             <div className="modal-body">
-
                                 {selectedRecipe.instructions
-                                    .split(/(?:Step\s+[0-9]+:\s*)/i) // Splitting based on "Step X:" pattern
-                                    .filter(Boolean) // Removing empty matches
+                                    .split(/(?:Step\s+[0-9]+:\s*)/i)
+                                    .filter(Boolean)
                                     .map((instruction, index) => (
                                         <p key={index}>
-                                            <b>Step {index + 1}: </b> {instruction.trim()} {/* Adding "Step X:" dynamically */}
+                                            <b>Step {index + 1}: </b> {instruction.trim()}
                                         </p>
                                     ))}
-
                             </div>
                         </div>
                     </div>
@@ -506,7 +485,6 @@ const UserPhotos = () => {
             )}
 
             <CustomUpload onUploadComplete={handleUploadComplete} />
-
         </div>
     );
 };

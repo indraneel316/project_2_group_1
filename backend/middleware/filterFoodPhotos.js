@@ -100,19 +100,15 @@ export default async function filterFoodPhotos(photoInputs) {
                     fileBuffer = await fs.readFileSync(filePath);
                     await fs.unlinkSync(filePath);
                 } else {
-                    // Input is a Base64 string, decode into a buffer
                     fileBuffer = Buffer.from(photoInput, 'base64');
                 }
 
-                // Compute a hash of the file to use as a unique identifier
                 const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
                 const uniqueFileName = `food-photos/${fileHash}.jpg`;
 
-                console.log("TRACK DATA 0 ", uniqueFileName)
 
                 // Check if the file already exists in S3
                 const fileExists = await checkIfS3FileExists(uniqueFileName);
-                console.log("TRACK DATA 1 ", fileExists)
 
 
                 const s3Url = fileExists
@@ -126,7 +122,6 @@ export default async function filterFoodPhotos(photoInputs) {
         }
     });
 
-    // Wait for all photos to be processed
     await Promise.all(individualRequests);
 
     return s3Urls;
