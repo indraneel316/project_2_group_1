@@ -1,9 +1,10 @@
 import express from 'express';
 import multer from 'multer';
-import { uploadToS3 } from '../config/s3Config.js';
+import {checkIfS3FileExists, uploadToS3} from '../config/s3Config.js';
 import db from '../config/firebase.js';  // Firestore initialization
 import dotenv from 'dotenv';
-import {isFoodImage} from "../middleware/filterFoodPhotos.js";
+import filterFoodPhotos, {isFoodImage} from "../middleware/filterFoodPhotos.js";
+import crypto from "crypto";
 
 dotenv.config();
 const router = express.Router();
@@ -91,24 +92,18 @@ router.get('/photos', async (req, res) => {
 });
 
 router.put("/add-photo/:email", upload.single("photo"), async (req, res) => {
-    const { email } = req.params; // Extract email from the request params
+    const { email } = req.params;
 
     try {
         if (!email) {
             return res.status(400).json({ message: "Email is required in the URL params." });
         }
 
-        // Ensure that a file (photo) was uploaded
         if (!req.file) {
             return res.status(400).json({ message: "A photo file must be uploaded." });
         }
 
-        // Convert the uploaded photo to Base64
         const base64Photo = req.file.buffer.toString("base64");
-
-
-
-        // Find the user by email and update the `photos` array
         const customerRef = db.collection("customers");
         const snapshot = await customerRef.where("email", "==", email).get();
 
@@ -116,27 +111,44 @@ router.put("/add-photo/:email", upload.single("photo"), async (req, res) => {
             return res.status(404).json({ message: "User not found." });
         }
 
-        if(await isFoodImage(base64Photo)) {
+        if (await isFoodImage(base64Photo)) {
+            const userDoc = snapshot.docs[0];
+            const userId = userDoc.id;
+            const userData = userDoc.data();
+            const currentPhotos = userData.photos || [];
 
-        const userDoc = snapshot.docs[0]; // Get the user's document
-        const userId = userDoc.id;
+            const fileBuffer = Buffer.from(base64Photo, 'base64');
+            const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
+            const uniqueFileName = `food-photos/${fileHash}.jpg`;
 
+            // Check if the file already exists in S3
+            const fileExists = await checkIfS3FileExists(uniqueFileName);
 
-        const s3Url = await uploadToS3(req.file.originalname, req.file.buffer)
+            let s3Url;
+            if (fileExists) {
+                s3Url = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${uniqueFileName}`;
+            } else {
+                s3Url = await uploadToS3(uniqueFileName, fileBuffer);
+            }
 
-        const userData = userDoc.data();
-        const updatedPhotos = userData.photos ? [...userData.photos, s3Url] : [s3Url];
-        console.log("TRACK DATA 1 ", updatedPhotos.length);
+            // Check if the URL already exists in Firestore
+            if (!currentPhotos.includes(s3Url)) {
+                const updatedPhotos = [...currentPhotos, s3Url];
+                console.log("TRACK DATA 1 ", updatedPhotos.length);
 
-        await customerRef.doc(userId).update({ photos: updatedPhotos });
+                await customerRef.doc(userId).update({ photos: updatedPhotos });
 
-        res.status(200).json({
-            message: "Photo successfully added to user's photos array.",
-            photos: updatedPhotos,
-        });
-    }
-
-        else {
+                res.status(200).json({
+                    message: "Photo successfully added to user's photos array.",
+                    photos: updatedPhotos,
+                });
+            } else {
+                res.status(200).json({
+                    message: "The photo already exists in the user's photos array.",
+                    photos: currentPhotos,
+                });
+            }
+        } else {
             res.status(400).json({
                 message: "Invalid Photo",
             });
@@ -147,4 +159,86 @@ router.put("/add-photo/:email", upload.single("photo"), async (req, res) => {
         return res.status(500).json({ error: "Failed to add photo." });
     }
 });
+
+router.post('/save-results', async (req, res) => {
+    const { email, photoData } = req.body;
+
+
+    console.log("PHOTO DATA ", photoData)
+
+    try {
+        if (!email || !photoData) {
+            return res.status(400).json({ message: 'Email and photoData are required.' });
+        }
+
+        const photoResultsRef = db.collection('photoResults');
+
+        // Check if the user already has a photoResults document
+        const snapshot = await photoResultsRef.where('email', '==', email).get();
+
+        let docRef;
+        if (snapshot.empty) {
+            const newPhotoResult = {
+                email,
+                photoData: [photoData], // Initialize photoData as an array if it's the first entry
+            };
+            docRef = await photoResultsRef.add(newPhotoResult);
+        } else {
+            // Update the existing document
+            const existingDoc = snapshot.docs[0];
+            const existingData = existingDoc.data();
+
+            // Ensure photoData is an array before calling .concat()
+            const updatedPhotoData = Array.isArray(existingData.photoData)
+                ? existingData.photoData.concat(photoData)
+                : [photoData]; // Initialize as an array if it's not already
+
+            await photoResultsRef.doc(existingDoc.id).update({
+                photoData: updatedPhotoData,
+                createdAt: new Date(),
+            });
+
+            docRef = existingDoc.ref; // Use the existing document reference
+        }
+
+        return res.status(201).json({
+            message: 'Photo data saved successfully.',
+            photoResult: { id: docRef.id, email, photoData },
+        });
+    } catch (error) {
+        console.error('Error saving photo data:', error);
+        return res.status(500).json({ error: 'Failed to save photo data.' });
+    }
+});
+
+
+
+router.get('/retrieve-results/:email', async (req, res) => {
+    const { email }  = req.params;
+
+    try {
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required in the request parameters.' });
+        }
+
+        const photoResultsRef = db.collection('photoResults');
+
+        const snapshot = await photoResultsRef.where('email', '==', email).get();
+
+        if (snapshot.empty) {
+            return res.status(404).json({ message: `No photo data found for email: ${email}` });
+        }
+
+        const photoData = snapshot.docs.map(doc => doc.data().results);  // Return only the `results` field
+        console.log("TRACK DATA 1", photoData);
+        return res.status(200).json({
+            photoData
+        });
+    } catch (error) {
+        console.error('Error retrieving photo data:', error);
+        return res.status(500).json({ error: 'Failed to retrieve photo data.' });
+    }
+});
+
+
 export default router;

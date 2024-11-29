@@ -4,7 +4,9 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { v4 as uuidv4 } from 'uuid';
-import {uploadToS3} from "../config/s3Config.js";
+import {uploadToS3, checkIfS3FileExists} from "../config/s3Config.js";
+import crypto from 'crypto';
+
 
 const visionClient = new ImageAnnotatorClient();
 
@@ -85,29 +87,38 @@ function convertImageToBase64(filePath) {
 
 export default async function filterFoodPhotos(photoInputs) {
     const s3Urls = [];
-
     const individualRequests = photoInputs.map(async (photoInput) => {
         try {
             // Check if the photo is food-related
             const isFood = await isFoodImage(photoInput);
-
             if (isFood) {
                 let fileBuffer;
-                let filePath;
 
                 if (photoInput.startsWith('http')) {
                     // Input is a URL, download the file
-                    filePath = await downloadImage(photoInput);
-                    fileBuffer = fs.readFileSync(filePath); // Read file into a buffer
-                    fs.unlinkSync(filePath); // Clean up after reading
+                    const filePath = await downloadImage(photoInput);
+                    fileBuffer = await fs.readFileSync(filePath);
+                    await fs.unlinkSync(filePath);
                 } else {
                     // Input is a Base64 string, decode into a buffer
                     fileBuffer = Buffer.from(photoInput, 'base64');
                 }
 
-                // Upload the file to S3
-                const uniqueFileName = `food-photos/${uuidv4()}.jpg`; // Generate unique S3 path
-                const s3Url = await uploadToS3(uniqueFileName, fileBuffer); // Upload to S3
+                // Compute a hash of the file to use as a unique identifier
+                const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
+                const uniqueFileName = `food-photos/${fileHash}.jpg`;
+
+                console.log("TRACK DATA 0 ", uniqueFileName)
+
+                // Check if the file already exists in S3
+                const fileExists = await checkIfS3FileExists(uniqueFileName);
+                console.log("TRACK DATA 1 ", fileExists)
+
+
+                const s3Url = fileExists
+                    ? `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${uniqueFileName}` // Reuse existing file URL
+                    : await uploadToS3(uniqueFileName, fileBuffer);
+
                 s3Urls.push(s3Url);
             }
         } catch (error) {

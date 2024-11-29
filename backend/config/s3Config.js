@@ -1,4 +1,4 @@
-import { S3 } from '@aws-sdk/client-s3';
+import {GetObjectCommand, HeadObjectCommand, S3} from '@aws-sdk/client-s3';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -10,6 +10,22 @@ const s3 = new S3({
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     },
 });
+
+export async function checkIfS3FileExists(filePath) {
+    try {
+        const command = new GetObjectCommand({
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: filePath,
+        });
+        await s3.send(command); // Attempt to fetch the object
+        return true; // File exists
+    } catch (error) {
+        if (error.name === "NoSuchKey" || error.name === "NotFound") {
+            return false; // File does not exist
+        }
+        throw error; // Other errors
+    }
+}
 
 export const uploadToS3 = async (fileName, fileContent) => {
     const params = {

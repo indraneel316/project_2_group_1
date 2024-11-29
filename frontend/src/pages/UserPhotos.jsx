@@ -21,7 +21,7 @@ const UserPhotos = () => {
     const [photoData, setPhotoData] = useState(() => {
         // Restore photoData from localStorage on initialization
         const savedPhotoData = localStorage.getItem('photoData');
-        return savedPhotoData ? JSON.parse(savedPhotoData) : {}; // Use saved state or start with an empty object
+        return savedPhotoData ? JSON.parse(savedPhotoData) : {};
     });
     const [error, setError] = useState('');
     const [selectedPhoto, setSelectedPhoto] = useState(null); // Currently opened photo
@@ -78,6 +78,38 @@ const UserPhotos = () => {
         setError('');
     };
 
+    const handleSave = async () => {
+        if (!user || !photoData) {
+            setError('No photo or user information available.');
+            return;
+        }
+
+        try {
+            const dataToSend = {
+                email: user.email,
+                photoData: photoData
+            };
+
+            const response = await axios.post('http://localhost:5000/backend/api/users/save-results', dataToSend, {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.status === 201) {
+                setError('');
+                handleCloseModal(); // Close modal on successful save
+            } else {
+                setError('Failed to save photo data.');
+            }
+        } catch (err) {
+            setError('Failed to save photo data.');
+            console.error('Error saving photo data:', err.response?.data || err.message);
+        }
+    };
+
+
 
     const handleCardClick = (photo) => {
         setSelectedPhoto(photo);
@@ -88,14 +120,14 @@ const UserPhotos = () => {
             ...prevState,
             [photo]: {
                 ...prevState[photo],
-                tabs: prevState[photo]?.tabs || ['photo'], // Restore tabs for photo
+                tabs: prevState[photo]?.tabs || ['photo'],
             },
         }));
     };
 
     const handleCloseModal = () => {
         setSelectedPhoto(null);
-        setActiveTab('photo'); // Reset active tab view
+        setActiveTab('photo');
         setError('');
     };
 
@@ -365,7 +397,7 @@ const UserPhotos = () => {
                                                             >
                                                                 Add Ingredient
                                                             </button>
-                                                            <hr />
+                                                            <hr/>
                                                             {/* Recipe Filters */}
                                                             <div className="row">
                                                                 <div className="col-md-4">
@@ -422,7 +454,7 @@ const UserPhotos = () => {
                                                         <div
                                                             key={index}
                                                             className="p-3 bg-danger text-white rounded mb-3"
-                                                            style={{ cursor: 'pointer' }}
+                                                            style={{cursor: 'pointer'}}
                                                             onClick={() => setSelectedRecipe(recipe)}
                                                         >
                                                             <strong>{recipe.title}</strong>
@@ -430,6 +462,10 @@ const UserPhotos = () => {
                                                     ))}
                                                 </div>
                                             )}
+                                            <div className="d-flex justify-content-between mt-4">
+                                                <button className="btn btn-success" onClick={handleSave}>Save</button>
+                                            </div>
+
                                         </>
                                     }
                                 </div>

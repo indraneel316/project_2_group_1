@@ -163,6 +163,7 @@ async function processPhotosInBackground(email, accessToken) {
             nextPageUrl = photosData.data.paging?.next || null;
         }
 
+        // Filter the photos to include only food-related images
         const allFoodPhotos = await filterFoodPhotos(allPhotos);
 
         const customersRef = db.collection('customers');
@@ -170,16 +171,25 @@ async function processPhotosInBackground(email, accessToken) {
 
         if (!snapshot.empty) {
             const userDoc = snapshot.docs[0];
-            await db.collection('customers').doc(userDoc.id).update({
-                photos: allFoodPhotos,
-            });
+            const currentPhotos = userDoc.data().photos || [];
+
+            const newFoodPhotos = allFoodPhotos.filter(photo => !currentPhotos.includes(photo));
+            const updatedPhotos = [...currentPhotos, ...newFoodPhotos];
+
+            if (newFoodPhotos.length > 0) {
+                await customersRef.doc(userDoc.id).update({
+                    photos: updatedPhotos,
+                });
+                console.log(`Updated photos for user: ${email}`);
+            } else {
+                console.log(`No new photos to update for user: ${email}`);
+            }
         } else {
             console.warn(`No user document found for email: ${email}`);
         }
-
-        console.log(`Successfully processed photos for user: ${email}`);
     } catch (error) {
         console.error(`Error processing photos for user ${email}:`, error);
     }
 }
+
 export default router;
