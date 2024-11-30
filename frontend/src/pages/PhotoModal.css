@@ -1,0 +1,40 @@
+.modal-dark {
+    background-color: #2c2c2c;
+    color: white;
+    border-radius: 10px;
+}
+
+.modal-photo {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    animation: zoomIn 0.3s ease-in-out;
+}
+
+.ingredient-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.ingredient-badge {
+    background-color: #444;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.custom-input {
+    border: 2px solid #555;
+    background: #333;
+    color: white;
+    border-radius: 6px;
+    transition: border-color 0.3s ease;
+}
+
+.custom-input:focus {
+    border-color: #e74c3c;
+    outline: none;
+}

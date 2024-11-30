@@ -1,31 +1,38 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
+import { UserContext } from '../context/userContext';
 import './CustomUpload.css';
-import {UserContext} from "../context/userContext";
 
 const CustomUpload = ({ onUploadComplete }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadPreview, setUploadPreview] = useState('');
+    const [caption, setCaption] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
     const { user } = useContext(UserContext);
 
-
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            const validTypes = ['image/jpeg', 'image/png'];
+            if (!validTypes.includes(file.type)) {
+                setError('Invalid file type. Please upload a JPEG or PNG image.');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) { // Limit file size to 5MB
+                setError('File size exceeds 5MB. Please choose a smaller image.');
+                return;
+            }
             setSelectedFile(file);
             setUploadPreview(URL.createObjectURL(file));
-            setError(''); // Clear any previous errors
+            setError('');
         }
     };
 
-
-
     const handleUpload = async () => {
         if (!selectedFile) {
-            setError('Please select a file to upload.');
+            setError('Please select a photo');
             return;
         }
 
@@ -37,45 +44,63 @@ const CustomUpload = ({ onUploadComplete }) => {
 
         try {
             const response = await axios.put(
-                `http://localhost:5000/backend/api/users/add-photo/${user.email}`,
+                `http://localhost:5001/backend/api/users/add-photo/${user.email}`,
                 formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }
+                { headers: { 'Content-Type': 'multipart/form-data' } }
             );
 
-            const newPhotosArray = response.data.photos;
-
-            if (onUploadComplete) {
-                onUploadComplete(newPhotosArray);
-            }
+            if (onUploadComplete) onUploadComplete(response.data.photos);
             setSelectedFile(null);
             setUploadPreview('');
+            setCaption('');
         } catch (err) {
             console.error('Error uploading photo:', err.response?.data || err.message);
-            setError('Failed to upload photo. Please try again.');
+            setError(err.response?.data?.message || 'Failed to upload photo.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="custom-upload bg-light p-4 rounded shadow">
-            <h4 className="text-center mb-3 text-danger">Upload a Photo</h4>
-            {error && <div className="alert alert-danger">{error}</div>}
-            <div className="mb-3">
-                <input type="file" className="form-control" accept="image/*" onChange={handleFileChange} />
-            </div>
-            {uploadPreview && (
-                <div className="text-center mb-3">
-                    <img src={uploadPreview} alt="Preview" className="upload-preview img-thumbnail rounded" />
+        <div className="custom-upload-container">
+            <div className="upload-card">
+                <h4 className="upload-title">Create a Post</h4>
+                {error && <div className="error-message">{error}</div>}
+                {uploadPreview && (
+                    <div className="preview-container">
+                        <img
+                            src={uploadPreview}
+                            alt="Preview"
+                            className="preview-image"
+                        />
+                    </div>
+                )}
+                <div className="file-input-wrapper">
+                    <input
+                        type="file"
+                        id="file-input"
+                        className="file-input"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                    />
+                    <label htmlFor="file-input" className="file-label">
+                        {selectedFile ? 'Change Photo' : 'Upload Photo'}
+                    </label>
                 </div>
-            )}
-            <button onClick={handleUpload} className="btn btn-danger w-100" disabled={loading}>
-                {loading ? 'Uploading...' : 'Upload Photo'}
-            </button>
+                {/* <textarea
+                    className="caption-input"
+                    placeholder="Write a caption..."
+                    value={caption}
+                    onChange={(e) => setCaption(e.target.value)}
+                ></textarea> */}
+                <button
+                    className={`upload-button ${loading ? 'disabled' : ''}`}
+                    onClick={handleUpload}
+                    disabled={loading}
+                >
+                    {loading ? 'Uploading...' : 'Post'}
+                </button>
+            </div>
         </div>
     );
 };

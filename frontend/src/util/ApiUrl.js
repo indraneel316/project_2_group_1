@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const getApiUrl = async () => {
     // const ec2Url = 'https://foodhealthnutrininja.com/backend';
-    const localhostUrl = 'http://localhost:5000/backend';
+    const localhostUrl = 'http://localhost:5001/backend';
 
     try {
         await axios.get(`${localhostUrl}/healthcheck`);

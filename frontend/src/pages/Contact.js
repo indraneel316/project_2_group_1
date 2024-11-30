@@ -60,46 +60,56 @@ const Contact = () => {
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="contact-form">
-                        <div className="mb-3">
-                            <input
-                                type="text"
-                                className={`form-control ${formErrors.name ? 'is-invalid' : ''}`}
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                placeholder="Name"
-                                required
-                            />
-                            {formErrors.name && <div className="invalid-feedback">{formErrors.name}</div>}
-                        </div>
-                        <div className="mb-3">
-                            <input
-                                type="email"
-                                className={`form-control ${formErrors.email ? 'is-invalid' : ''}`}
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                placeholder="Email"
-                                required
-                            />
-                            {formErrors.email && <div className="invalid-feedback">{formErrors.email}</div>}
-                        </div>
-                        <div className="mb-3">
-                            <textarea
-                                className={`form-control ${formErrors.message ? 'is-invalid' : ''}`}
-                                name="message"
-                                rows="5"
-                                value={formData.message}
-                                onChange={handleChange}
-                                placeholder="Your Message"
-                                required
-                            />
-                            {formErrors.message && <div className="invalid-feedback">{formErrors.message}</div>}
-                        </div>
-                        <button type="submit" className="btn btn-danger w-100">
-                            Send Message
-                        </button>
-                    </form>
+    <div className="mb-3">
+        <input
+            type="text"
+            className={`form-control ${formErrors.name ? 'is-invalid' : ''}`}
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Name"
+            required
+        />
+        {formErrors.name && <div className="invalid-feedback">{formErrors.name}</div>}
+    </div>
+    <div className="mb-3">
+        <input
+            type="email"
+            className={`form-control ${formErrors.email ? 'is-invalid' : ''}`}
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            required
+        />
+        {formErrors.email && <div className="invalid-feedback">{formErrors.email}</div>}
+    </div>
+    <div className="mb-3">
+        <textarea
+            className={`form-control ${formErrors.message ? 'is-invalid' : ''}`}
+            name="message"
+            rows="5"
+            value={formData.message}
+            onChange={handleChange}
+            placeholder="Your Message"
+            required
+        />
+        {formErrors.message && <div className="invalid-feedback">{formErrors.message}</div>}
+    </div>
+    <button type="submit" className="cssbuttons-io-button">
+        Send Message
+        <div className="icon">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 13h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+            </svg>
+        </div>
+    </button>
+</form>
+
                 )}
             </div>
         </div>

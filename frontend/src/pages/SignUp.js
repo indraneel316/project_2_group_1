@@ -33,7 +33,7 @@ const SignUp = () => {
     const responseFacebook = async (response) => {
         if (response.accessToken) {
             try {
-                const res = await axios.post('https://18.216.109.236:5000/auth/users/facebook', {
+                const res = await axios.post('https://18.216.109.236:5001/auth/users/facebook', {
                     accessToken: response.accessToken
                 });
                 setUser(res.data.user);
