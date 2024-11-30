@@ -14,8 +14,8 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 
-# Expose port 5001 for HTTPS
-EXPOSE 5001
+# Expose port 5000 for HTTPS
+EXPOSE 5000
 
 # Run the server
 CMD ["node", "server.js"]

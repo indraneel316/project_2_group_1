@@ -44,7 +44,7 @@ const CustomUpload = ({ onUploadComplete }) => {
 
         try {
             const response = await axios.put(
-                `http://localhost:5001/backend/api/users/add-photo/${user.email}`,
+                `http://localhost:5000/backend/api/users/add-photo/${user.email}`,
                 formData,
                 { headers: { 'Content-Type': 'multipart/form-data' } }
             );

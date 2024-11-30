@@ -23,7 +23,7 @@ const UserPhotos = () => {
                 return;
             }
             try {
-                const response = await axios.get('http://localhost:5001/backend/api/users/photos', {
+                const response = await axios.get('http://localhost:5000/backend/api/users/photos', {
                     params: { email: user.email },
                     headers: {
                         Authorization: `Bearer ${user.token}`,
