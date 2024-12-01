@@ -8,9 +8,10 @@ body.modal-open {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    /* height: 100vh; */
     width: 100%;
     background: black;
+    margin-top: 1rem;
 }
 
 .modal.fade.show {
