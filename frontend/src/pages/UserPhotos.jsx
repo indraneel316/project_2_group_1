@@ -130,7 +130,7 @@ const UserPhotos = () => {
                     ],
                 },
                 {
-                    headers: { Authorization: `Bearer YOUR_API_KEY`, 'Content-Type': 'application/json' },
+                    headers: { Authorization: `Bearer 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`, 'Content-Type': 'application/json' },
                 }
             );
 
