@@ -31,6 +31,7 @@ const PhotoCard = ({ photoUrl, index, onClick, onRemove }) => {
                     X
                 </button>
 
+
                 {/* Card body (optional extra content) */}
                 <div className="card-body d-flex flex-column justify-content-between">
                     <h5 className="card-title">Photo {index + 1}</h5>
