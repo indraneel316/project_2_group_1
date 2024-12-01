@@ -114,11 +114,12 @@ const UserPhotos = () => {
             setError('No photo selected.');
             return;
         }
-
         setLoading(true);
+
+        const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
         try {
             const response = await axios.post(
-                'https://openrouter.ai/api/v1/chat/completions',
+                API_URL,
                 {
                     model: 'openai/gpt-4o',
                     messages: [
@@ -127,24 +128,35 @@ const UserPhotos = () => {
                             content: [
                                 {
                                     type: 'text',
-                                    text: "Classify the given image as 'dish' or 'ingredient'. If dish: LIST down all the ingredients. If ingredient: give the name.",
+                                    text: "Classify the given image as 'dish' or 'ingredient'. If dish: LIST down all the ingredients(line by line) on how to make the food in the Image. No extra content. If ingredient: give the name. No EXTRA CONTENT. Don't give me the classification type either, no extra symbols."
                                 },
-                                { type: 'image_url', image_url: selectedPhotoUrl },
-                            ],
-                        },
-                    ],
+                                {
+                                    type: 'image_url',
+                                    image_url: selectedPhotoUrl
+                                }
+                            ]
+                        }
+                    ]
                 },
                 {
-                    headers: { Authorization: `Bearer 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`, 'Content-Type': 'application/json' },
+                    headers: {
+                        Authorization: `Bearer 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`,
+                        'Content-Type': 'application/json',
+                    },
                 }
             );
 
             const ingredientsText = response.data.choices[0].message.content;
             const ingredientsList = ingredientsText.split('\n').map((item) => item.trim()).filter(Boolean);
 
+            // Update the photoData to include 'photo' in tabs
             updatePhotoData(selectedPhotoUrl, {
                 ingredients: ingredientsList,
-                tabs: Array.from(new Set(['photo', ...(photoData[selectedPhotoUrl]?.tabs || []), 'analysis'])),
+                tabs: Array.from(new Set([
+                    'photo', // Ensure 'photo' is always included
+                    ...(photoData[selectedPhotoUrl]?.tabs || []),
+                    'analysis'
+                ])),
                 activeTab: 'analysis',
             });
             setActiveTab('analysis');
@@ -156,6 +168,26 @@ const UserPhotos = () => {
         }
     };
 
+    const handleAddIngredient = () => {
+        if (customIngredient && selectedPhotoUrl) {
+            updatePhotoData(selectedPhotoUrl, {
+                ingredients: [
+                    ...(photoData[selectedPhotoUrl]?.ingredients || []),
+                    customIngredient,
+                ],
+            });
+            setCustomIngredient('');
+        }
+    };
+
+    const handleRemoveIngredient = (ingredient) => {
+        if (selectedPhotoUrl) {
+            updatePhotoData(selectedPhotoUrl, {
+                ingredients: photoData[selectedPhotoUrl]?.ingredients?.filter((i) => i !== ingredient),
+            });
+        }
+    };
+
     const handleGetRecipeSuggestions = async () => {
         if (!selectedPhotoUrl || !photoData[selectedPhotoUrl]?.ingredients?.length) {
             setError('No ingredients available to suggest recipes.');
@@ -164,9 +196,10 @@ const UserPhotos = () => {
 
         setLoading(true);
         const allIngredients = photoData[selectedPhotoUrl]?.ingredients.join(', ');
+        const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
         try {
             const response = await axios.post(
-                'https://openrouter.ai/api/v1/chat/completions',
+                API_URL,
                 {
                     model: 'openai/gpt-4o',
                     messages: [
@@ -175,14 +208,17 @@ const UserPhotos = () => {
                             content: [
                                 {
                                     type: 'text',
-                                    text: `Suggest 5 recipes based on these ingredients: ${allIngredients}. Diet: ${diet}, Cuisine: ${cuisine}, Allergens: ${allergens}.`,
+                                    text: `Suggest 5 recipes based on these ingredients: ${allIngredients}. Diet: ${diet}, Cuisine: ${cuisine}, Allergens: ${allergens}. Format the response as a list of recipes. Each recipe should have a title and instructions. No extra content. Instructions should be line by line and it should start with Step. It should be Title: "Title Of The Recipe" Instructions: `
                                 },
-                            ],
-                        },
-                    ],
+                            ]
+                        }
+                    ]
                 },
                 {
-                    headers: { Authorization: `Bearer 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`, 'Content-Type': 'application/json' },
+                    headers: {
+                        Authorization: `Bearer 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`,
+                        'Content-Type': 'application/json',
+                    },
                 }
             );
 
@@ -195,11 +231,10 @@ const UserPhotos = () => {
                     instructions: instructionsMatch ? instructionsMatch[1].trim() : 'No instructions available',
                 };
             });
-            setSuggestedRecipes(recipesList)
 
             updatePhotoData(selectedPhotoUrl, {
                 recipes: recipesList,
-                tabs: Array.from(new Set(['recipe suggestions', ...(photoData[selectedPhotoUrl]?.tabs || [])])),
+                tabs: Array.from(new Set([...(photoData[selectedPhotoUrl]?.tabs || []), 'recipe suggestions'])),
                 activeTab: 'recipe suggestions',
             });
             setActiveTab('recipe suggestions');
@@ -210,6 +245,7 @@ const UserPhotos = () => {
             setLoading(false);
         }
     };
+
 
     const handleCardClick = (photoUrl) => {
         setSelectedPhotoUrl(photoUrl);
@@ -251,24 +287,25 @@ const UserPhotos = () => {
                             <div className="modal-body">
                                 <ModalTabs tabs={tabs} activeTab={activeTab} onChangeTab={setActiveTab} />
                                 <TabContent
-    activeTab={activeTab}
-    selectedPhotoUrl={selectedPhotoUrl}
-    ingredients={ingredients}
-    onAnalyze={handleAnalyze}
-    loading={loading}
-    onSave={handleSave}
-    onGetRecipeSuggestions={handleGetRecipeSuggestions}
-    // recipes={recipes}
-    suggestedRecipes={suggestedRecipes}
-    setSelectedRecipe={setSelectedRecipe}
-    diet={diet}
-    cuisine={cuisine}
-    allergens={allergens}
-    setDiet={setDiet}
-    setCuisine={setCuisine}
-    setAllergens={setAllergens}
-/>
-
+                                activeTab={activeTab}
+                                selectedPhotoUrl={selectedPhotoUrl}
+                                ingredients={ingredients}
+                                onAnalyze={handleAnalyze}
+                                loading={loading}
+                                onSave={handleSave}
+                                onAddIngredient ={handleAddIngredient}
+                                onRemoveIngredient={handleRemoveIngredient}
+                                onGetRecipeSuggestions={handleGetRecipeSuggestions}
+                                recipes={recipes}
+                                suggestedRecipes={suggestedRecipes}
+                                setSelectedRecipe={setSelectedRecipe}
+                                diet={diet}
+                                cuisine={cuisine}
+                                allergens={allergens}
+                                setDiet={setDiet}
+                                setCuisine={setCuisine}
+                                setAllergens={setAllergens}
+                                />
                             </div>
                         </div>
                     </div>

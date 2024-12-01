@@ -20,8 +20,8 @@ const TabContent = ({
     setCuisine,
     setAllergens,
     onGetRecipeSuggestions,
-    // recipes,
-    suggestedRecipes,
+    recipes,
+    // suggestedRecipes,
     onSave,
     setSelectedRecipe,
 }) => {
@@ -58,12 +58,11 @@ const TabContent = ({
     if (activeTab === 'analysis') {
         return (
             <div>
-                {ingredients.length > 0 && (
                     <>
-                        <IngredientDetails
+                        {ingredients.length > 0 && ( <IngredientDetails
                             ingredients={ingredients}
                             onRemoveIngredient={onRemoveIngredient}
-                        />
+                        />)}
                         <input
                             type="text"
                             className="form-control"
@@ -121,7 +120,7 @@ const TabContent = ({
                             Get Recipe Suggestions
                         </button>
                     </>
-                )}
+
             </div>
         );
     }
@@ -129,7 +128,7 @@ const TabContent = ({
     if (activeTab === 'recipe suggestions') {
         return (
             <div>
-                {suggestedRecipes.map((recipe, index) => (
+                {recipes.map((recipe, index) => (
 // recipe.title !== "Unknown Title"
                     <div
                         key={index}
