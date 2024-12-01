@@ -1,8 +1,22 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Fade, Slide } from 'react-reveal';
+import { Link, useNavigate } from 'react-router-dom';
 
 const About = () => {
+
+    const navigate = useNavigate();
+
+    const handleNavigate = () => {
+        if (sessionStorage.getItem('authToken') !== undefined && sessionStorage.getItem('authToken') !== null ){
+        navigate('/product');
+        }
+
+        else {
+            navigate('/signin');
+        }
+    };
+    
     return (
         <div
             className="container-fluid bg-black text-white min-vh-100 d-flex align-items-center justify-content-center"
@@ -70,9 +84,9 @@ const About = () => {
                         culinary journey.
                     </p>
                     <p className="text-center mt-4">
-                        <a href="/frontend/src/pages/UserPhotos" className="btn btn-danger btn-lg">
+                        <div onClick={handleNavigate} className="btn btn-danger btn-lg">
                             Explore Recipes
-                        </a>
+                        </div>
                     </p>
                 </Slide>
             </div>

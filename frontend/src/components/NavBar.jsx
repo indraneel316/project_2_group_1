@@ -11,7 +11,7 @@ const NavBar = () => {
 
     const onSignOut = () => {
         setUser(null);
-        navigate('/signin');
+        navigate('/');
         setShowBreadcrumbs(false); // Close dropdown after sign-out
         sessionStorage.removeItem('authToken');
     };
