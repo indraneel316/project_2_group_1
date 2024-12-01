@@ -224,5 +224,55 @@ router.get('/retrieve-results', async (req, res) => {
     }
 });
 
+router.delete('/remove-photo', async (req, res) => {
+    try {
+        const { email, photoUrl } = req.body; // Expecting email and photoUrl in the request body
+
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
+        if (!photoUrl) {
+            return res.status(400).json({ message: 'Photo URL is required' });
+        }
+
+        // Reference the Firestore customers collection
+        const customerRef = db.collection('customers');
+        const snapshot = await customerRef.where('email', '==', email).get();
+
+        if (snapshot.empty) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Get the document reference for the user
+        const userDoc = snapshot.docs[0];
+        const userData = userDoc.data();
+
+        // Check if the user has photos and the specified photo exists
+        if (!userData.photos || !userData.photos.includes(photoUrl)) {
+            return res.status(400).json({
+                message: 'Photo not found in user photos',
+            });
+        }
+
+        // Remove the specified photo from the photos array
+        const updatedPhotos = userData.photos.filter((photo) => photo !== photoUrl);
+
+        // Update the user document in Firestore
+        await customerRef.doc(userDoc.id).update({
+            photos: updatedPhotos, // Set the updated photos array
+        });
+
+        res.status(200).json({
+            message: 'Photo deleted successfully',
+            photos: updatedPhotos, // Return the updated photos array
+        });
+    } catch (error) {
+        console.error('Error deleting photo:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
 
 export default router;

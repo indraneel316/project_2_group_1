@@ -7,6 +7,7 @@ import TabContent from './TabContent';
 import RecipeDetailsModal from './RecipeDetailsModal';
 import CustomUpload from './CustomUpload';
 import './UserPhotos.css';
+import RemoveConfirmationModal from "./RemoveConfirmationModal";
 
 const UserPhotos = () => {
     const { user } = useContext(UserContext);
@@ -22,6 +23,9 @@ const UserPhotos = () => {
     const [selectedRecipe, setSelectedRecipe] = useState(null);
     const [activeTab, setActiveTab] = useState('photo');
     const [suggestedRecipes, setSuggestedRecipes] = useState([]);
+    const [photoToRemoveUrl, setPhotoToRemoveUrl] = useState(null);
+    const [showRemoveConfirmation, setShowRemoveConfirmation] = useState(false);
+
 
     // Fetch photos from backend
     useEffect(() => {
@@ -77,6 +81,11 @@ const UserPhotos = () => {
                 ...update,
             },
         }));
+    };
+
+    const handlePhotoRemoveRequest = (photoUrl) => {
+        setPhotoToRemoveUrl(photoUrl);
+        setShowRemoveConfirmation(true);
     };
 
     const handleUploadComplete = (newPhotosArray) => {
@@ -252,6 +261,34 @@ const UserPhotos = () => {
         setActiveTab(photoData[photoUrl]?.activeTab || 'photo');
     };
 
+    const removePhoto = async () => {
+        try {
+            if (!photoToRemoveUrl || !user?.email) return;
+
+            const response = await axios.delete(`http://localhost:5000/backend/api/users/remove-photo`, {
+                data: {
+                    email: user.email,
+                    photoUrl: photoToRemoveUrl,
+                },
+                headers: { Authorization: `Bearer ${user.token}` },
+            });
+
+            if (response.status === 200) {
+                // Update the local state to remove the photo
+                setPhotos((prevPhotos) => prevPhotos.filter((photo) => photo !== photoToRemoveUrl));
+                setError("");
+            } else {
+                setError("Failed to remove photo.");
+            }
+        } catch (err) {
+            setError("Failed to remove photo.");
+            console.error("Error removing photo:", err.response?.data || err.message);
+        } finally {
+            setShowRemoveConfirmation(false);
+            setPhotoToRemoveUrl(null);
+        }
+    };
+
     const handleCloseModal = () => {
         setSelectedPhotoUrl(null);
         setActiveTab('photo');
@@ -271,9 +308,15 @@ const UserPhotos = () => {
             {/* Photo Grid */}
             <div className="row">
                 {photos.map((photoUrl, index) => (
-                    <PhotoCard key={index} photoUrl={photoUrl} index={index} onClick={handleCardClick} />
+                    <PhotoCard key={index} photoUrl={photoUrl} index={index} onClick={handleCardClick} onRemove={handlePhotoRemoveRequest}/>
                 ))}
             </div>
+
+            <RemoveConfirmationModal
+                show={showRemoveConfirmation}
+                onClose={() => setShowRemoveConfirmation(false)}
+                onConfirm={removePhoto}
+            />
 
             {/* Modal for Photo Details */}
             {selectedPhotoUrl && (
