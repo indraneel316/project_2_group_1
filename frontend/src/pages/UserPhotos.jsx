@@ -15,8 +15,13 @@ const UserPhotos = () => {
     const [error, setError] = useState('');
     const [selectedPhotoUrl, setSelectedPhotoUrl] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [customIngredient, setCustomIngredient] = useState('');
+    const [diet, setDiet] = useState('');
+    const [cuisine, setCuisine] = useState('');
+    const [allergens, setAllergens] = useState('');
     const [selectedRecipe, setSelectedRecipe] = useState(null);
     const [activeTab, setActiveTab] = useState('photo');
+    const [suggestedRecipes, setSuggestedRecipes] = useState([]);
 
     // Fetch photos from backend
     useEffect(() => {
@@ -151,6 +156,61 @@ const UserPhotos = () => {
         }
     };
 
+    const handleGetRecipeSuggestions = async () => {
+        if (!selectedPhotoUrl || !photoData[selectedPhotoUrl]?.ingredients?.length) {
+            setError('No ingredients available to suggest recipes.');
+            return;
+        }
+
+        setLoading(true);
+        const allIngredients = photoData[selectedPhotoUrl]?.ingredients.join(', ');
+        try {
+            const response = await axios.post(
+                'https://openrouter.ai/api/v1/chat/completions',
+                {
+                    model: 'openai/gpt-4o',
+                    messages: [
+                        {
+                            role: 'user',
+                            content: [
+                                {
+                                    type: 'text',
+                                    text: `Suggest 5 recipes based on these ingredients: ${allIngredients}. Diet: ${diet}, Cuisine: ${cuisine}, Allergens: ${allergens}.`,
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    headers: { Authorization: `Bearer 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`, 'Content-Type': 'application/json' },
+                }
+            );
+
+            const recipesText = response.data.choices[0].message.content;
+            const recipesList = recipesText.split('\n\n').map((recipeText) => {
+                const titleMatch = recipeText.match(/Title:\s*"(.+?)"/);
+                const instructionsMatch = recipeText.match(/Instructions:\s*([\s\S]+)/);
+                return {
+                    title: titleMatch ? titleMatch[1] : 'Unknown Title',
+                    instructions: instructionsMatch ? instructionsMatch[1].trim() : 'No instructions available',
+                };
+            });
+            setSuggestedRecipes(recipesList)
+
+            updatePhotoData(selectedPhotoUrl, {
+                recipes: recipesList,
+                tabs: Array.from(new Set(['recipe suggestions', ...(photoData[selectedPhotoUrl]?.tabs || [])])),
+                activeTab: 'recipe suggestions',
+            });
+            setActiveTab('recipe suggestions');
+        } catch (err) {
+            setError('Failed to fetch recipe suggestions.');
+            console.error('Error fetching recipes:', err.response?.data || err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleCardClick = (photoUrl) => {
         setSelectedPhotoUrl(photoUrl);
         setActiveTab(photoData[photoUrl]?.activeTab || 'photo');
@@ -191,16 +251,24 @@ const UserPhotos = () => {
                             <div className="modal-body">
                                 <ModalTabs tabs={tabs} activeTab={activeTab} onChangeTab={setActiveTab} />
                                 <TabContent
-                                    activeTab={activeTab}
-                                    selectedPhotoUrl={selectedPhotoUrl}
-                                    ingredients={ingredients}
-                                    onAnalyze={handleAnalyze}
-                                    loading={loading}
-                                    onSave={handleSave}
-                                    recipes={recipes}
-                                    setSelectedRecipe={setSelectedRecipe}
-                                    updatePhotoData={updatePhotoData}
-                                />
+    activeTab={activeTab}
+    selectedPhotoUrl={selectedPhotoUrl}
+    ingredients={ingredients}
+    onAnalyze={handleAnalyze}
+    loading={loading}
+    onSave={handleSave}
+    onGetRecipeSuggestions={handleGetRecipeSuggestions}
+    // recipes={recipes}
+    suggestedRecipes={suggestedRecipes}
+    setSelectedRecipe={setSelectedRecipe}
+    diet={diet}
+    cuisine={cuisine}
+    allergens={allergens}
+    setDiet={setDiet}
+    setCuisine={setCuisine}
+    setAllergens={setAllergens}
+/>
+
                             </div>
                         </div>
                     </div>

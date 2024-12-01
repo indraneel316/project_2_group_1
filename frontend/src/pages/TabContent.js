@@ -20,19 +20,20 @@ const TabContent = ({
     setCuisine,
     setAllergens,
     onGetRecipeSuggestions,
-    recipes,
+    // recipes,
+    suggestedRecipes,
     onSave,
     setSelectedRecipe,
 }) => {
-    const [saveState, setSaveState] = useState('idle'); // idle, saving, saved
+    const [saveState, setSaveState] = useState('idle');
 
     const handleSaveClick = async () => {
-        setSaveState('saving'); // Show saving animation
+        setSaveState('saving');
         try {
-            await onSave(); // Perform the save action
-            setSaveState('saved'); // Set to saved on success
+            await onSave();
+            setSaveState('saved');
         } catch (error) {
-            setSaveState('idle'); // Reset to idle if save fails
+            setSaveState('idle');
             console.error('Save failed:', error);
         }
     };
@@ -128,7 +129,8 @@ const TabContent = ({
     if (activeTab === 'recipe suggestions') {
         return (
             <div>
-                {recipes.map((recipe, index) => (
+                {suggestedRecipes.map((recipe, index) => (
+// recipe.title !== "Unknown Title"
                     <div
                         key={index}
                         className="p-3 bg-danger text-white rounded mb-3"
@@ -138,6 +140,7 @@ const TabContent = ({
                         <strong>{recipe.title}</strong>
                     </div>
                 ))}
+
                 <button
                     className={`btn ${saveState === 'saved' ? 'btn-primary' : 'btn-success'} w-100 mt-3`}
                     onClick={handleSaveClick}
@@ -153,5 +156,6 @@ const TabContent = ({
         );
     }
 };
+
 
 export default TabContent;
