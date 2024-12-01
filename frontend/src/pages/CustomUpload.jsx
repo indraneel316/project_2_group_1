@@ -1,6 +1,8 @@
 import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { UserContext } from '../context/userContext';
+import Particles from 'react-tsparticles';
+import { loadFirePreset } from 'tsparticles-preset-fire';
 import './CustomUpload.css';
 
 const CustomUpload = ({ onUploadComplete }) => {
@@ -19,7 +21,7 @@ const CustomUpload = ({ onUploadComplete }) => {
                 setError('Invalid file type. Please upload a JPEG or PNG image.');
                 return;
             }
-            if (file.size > 5 * 1024 * 1024) { // Limit file size to 5MB
+            if (file.size > 5 * 1024 * 1024) {
                 setError('File size exceeds 5MB. Please choose a smaller image.');
                 return;
             }
@@ -59,10 +61,26 @@ const CustomUpload = ({ onUploadComplete }) => {
         }
     };
 
+    const particlesInit = async (engine) => {
+        await loadFirePreset(engine);
+    };
+
     return (
         <div className="custom-upload-container">
+            {/* Fire effect background */}
+            <Particles
+                id="tsparticles"
+                init={particlesInit}
+                options={{
+                    preset: "fire",
+                    background: {
+                        color: "transparent",
+                    },
+                }}
+            />
+
             <div className="upload-card">
-                <h4 className="upload-title">Create a Post</h4>
+                <h4 className="upload-title">Get Your Recipe!</h4>
                 {error && <div className="error-message">{error}</div>}
                 {uploadPreview && (
                     <div className="preview-container">

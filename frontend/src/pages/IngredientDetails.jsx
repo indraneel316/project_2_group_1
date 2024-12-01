@@ -4,25 +4,44 @@ const IngredientDetails = ({ ingredients, onRemoveIngredient }) => {
     return (
         <div className="mt-4">
             <h5>Recipe Ingredients</h5>
-            <div className="d-flex flex-wrap justify-content-start">
+            <div className="d-flex flex-wrap gap-3">
                 {ingredients.length > 0 ? (
                     ingredients.map((ingredient, index) => (
-                        <button
+                        <div
                             key={index}
-                            className="btn btn-outline-light m-2 position-relative"
+                            className="position-relative ingredient-card"
                             style={{
-                                paddingRight: '2rem', // Ensures room for "X"
-                                paddingLeft: '1rem', // Adds some space before the text
+                                display: 'inline-block',
+                                border: '1px solid #ccc',
+                                borderRadius: '8px',
+                                padding: '0.5rem 1rem',
+                                // backgroundColor: '#fff',
+                                boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+                                minWidth: '150px',
+                                textAlign: 'center',
+                                position: 'relative',
+                                fontSize: '0.9rem',
                             }}
                         >
-                            {ingredient}
+                            <span>{ingredient}</span>
 
                             <span
-                                className="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-danger"
+                                className="position-absolute remove-badge"
                                 style={{
+                                    top: '-8px',
+                                    right: '-8px',
                                     cursor: 'pointer',
-                                    fontSize: '1.5rem',
-                                    padding: '0.1rem 0.5rem',
+                                    color: '#fff',
+                                    fontSize: '0.8rem',
+                                    fontWeight: 'bold',
+                                    background: '#dc3545',
+                                    borderRadius: '50%',
+                                    width: '20px',
+                                    height: '20px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
                                 }}
                                 onClick={(e) => {
                                     e.stopPropagation(); // Prevent button click event
@@ -31,7 +50,7 @@ const IngredientDetails = ({ ingredients, onRemoveIngredient }) => {
                             >
                                 &times;
                             </span>
-                        </button>
+                        </div>
                     ))
                 ) : (
                     <p>No ingredients available for this photo.</p>

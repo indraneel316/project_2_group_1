@@ -298,7 +298,7 @@ const UserPhotos = () => {
     const selectedPhotoData = selectedPhotoUrl ? photoData[selectedPhotoUrl] || {} : {};
     const ingredients = selectedPhotoData.ingredients || [];
     const recipes = selectedPhotoData.recipes || [];
-    const tabs = selectedPhotoData.tabs || ['photo'];
+    const tabs = ['photo', 'analysis', 'recipe suggestions']
 
     return (
         <div className="container">

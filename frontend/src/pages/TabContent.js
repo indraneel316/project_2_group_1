@@ -5,6 +5,7 @@ import './TabContent.css';
 
 const TabContent = ({
     activeTab,
+    setActiveTab, // Allow parent to update the active tab
     selectedPhotoUrl,
     ingredients,
     customIngredient,
@@ -21,7 +22,6 @@ const TabContent = ({
     setAllergens,
     onGetRecipeSuggestions,
     recipes,
-    // suggestedRecipes,
     onSave,
     setSelectedRecipe,
 }) => {
@@ -40,32 +40,34 @@ const TabContent = ({
 
     if (loading) return <LoadingSpinner text="Loading..." />;
 
-    if (activeTab === 'photo') {
-        return (
+    return (
+        <div>
+            {/* Tab Content */}
             <div>
-                <img
-                    src={selectedPhotoUrl}
-                    alt="Selected user photo"
-                    className="img-fluid mb-3 rounded"
-                />
-                <button className="btn btn-danger w-100" onClick={onAnalyze}>
-                    Analyze Photo
-                </button>
-            </div>
-        );
-    }
+                {activeTab === 'photo' && (
+                    <div>
+                        <img
+                            src={selectedPhotoUrl}
+                            alt="Selected user photo"
+                            className="img-fluid mb-3 rounded"
+                        />
+                        <button className="btn btn-danger w-100" onClick={onAnalyze}>
+                            Analyze Photo
+                        </button>
+                    </div>
+                )}
 
-    if (activeTab === 'analysis') {
-        return (
-            <div>
-                    <>
-                        {ingredients.length > 0 && ( <IngredientDetails
-                            ingredients={ingredients}
-                            onRemoveIngredient={onRemoveIngredient}
-                        />)}
+                {activeTab === 'analysis' && (
+                    <div>
+                        {ingredients.length > 0 && (
+                            <IngredientDetails
+                                ingredients={ingredients}
+                                onRemoveIngredient={onRemoveIngredient}
+                            />
+                        )}
                         <input
                             type="text"
-                            className="form-control"
+                            className="form-control cus-m"
                             placeholder="Add custom ingredient"
                             value={customIngredient}
                             onChange={(e) => setCustomIngredient(e.target.value)}
@@ -119,42 +121,39 @@ const TabContent = ({
                         >
                             Get Recipe Suggestions
                         </button>
-                    </>
-
-            </div>
-        );
-    }
-
-    if (activeTab === 'recipe suggestions') {
-        return (
-            <div>
-                {recipes.map((recipe, index) => (
-// recipe.title !== "Unknown Title"
-                    <div
-                        key={index}
-                        className="p-3 bg-danger text-white rounded mb-3"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => setSelectedRecipe(recipe)}
-                    >
-                        <strong>{recipe.title}</strong>
                     </div>
-                ))}
+                )}
 
-                <button
-                    className={`btn ${saveState === 'saved' ? 'btn-primary' : 'btn-success'} w-100 mt-3`}
-                    onClick={handleSaveClick}
-                    disabled={saveState === 'saving'}
-                >
-                    {saveState === 'saving'
-                        ? 'Saving...'
-                        : saveState === 'saved'
-                        ? 'Saved!'
-                        : 'Save'}
-                </button>
+                {activeTab === 'recipe suggestions' && (
+                    <div className='cus-m'>
+                        {recipes.map((recipe, index) => (
+                            <div
+                                key={index}
+                                className="p-3 bg-danger text-white rounded mb-3"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => setSelectedRecipe(recipe)}
+                            >
+                                <strong>{recipe.title}</strong>
+                            </div>
+                        ))}
+                        <button
+                            className={`btn ${
+                                saveState === 'saved' ? 'btn-primary' : 'btn-success'
+                            } w-100 mt-3`}
+                            onClick={handleSaveClick}
+                            disabled={saveState === 'saving'}
+                        >
+                            {saveState === 'saving'
+                                ? 'Saving...'
+                                : saveState === 'saved'
+                                ? 'Saved!'
+                                : 'Save'}
+                        </button>
+                    </div>
+                )}
             </div>
-        );
-    }
+        </div>
+    );
 };
-
 
 export default TabContent;

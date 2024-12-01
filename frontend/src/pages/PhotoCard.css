@@ -5,85 +5,82 @@
 }
 
 .photo-card-wrapper:hover {
-    transform: scale(1.05); /* Slight scaling effect on hover */
+    transform: scale(1.05); /* Hover scaling effect */
 }
 
 /* Photo card container */
 .photo-card {
-    position: relative; /* Ensures the delete button is positioned relative to this container */
+    position: relative;
     overflow: hidden;
-    border-radius: 12px; /* Rounded corners for the card */
+    border-radius: 12px;
     cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for a lifted look */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-/* Image inside the photo card */
+/* Photo card image */
 .photo-card-img {
     width: 100%;
     height: 200px;
-    object-fit: cover; /* Ensures the image fills the space proportionally */
-    transition: transform 0.5s ease; /* Enables a smooth zoom-in effect */
+    object-fit: cover;
+    transition: transform 0.5s ease;
 }
 
 .photo-card-wrapper:hover .photo-card-img {
-    transform: scale(1.1); /* Image zooms in slightly on hover */
+    transform: scale(1.1); /* Zoom effect on hover */
 }
 
-/* Overlay (visible only on hover) */
+/* Overlay on hover */
 .photo-card-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
-    opacity: 0; /* Initially hidden */
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: opacity 0.3s ease; /* Smooth fade-in effect for the overlay */
+    transition: opacity 0.3s ease;
 }
 
 .photo-card-wrapper:hover .photo-card-overlay {
-    opacity: 1; /* Fully visible when hovered */
+    opacity: 1; /* Fade-in overlay on hover */
 }
 
-/* Title inside the overlay */
+/* Overlay title */
 .photo-card-title {
-    color: white; /* Title uses white for clarity */
+    color: white;
     font-weight: bold;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7); /* Adds contrast with a shadow */
-    font-size: 18px; /* Adjust text size for readability */
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
 }
 
-/* DELETE BUTTON ("x") */
+/* Delete button */
 .photo-card-close-btn {
-    all: unset;
     position: absolute;
-    top: 10px; /* Top-right corner with some spacing */
-    right: 10px; /* Top-right corner with some spacing */
+    top: 10px;
+    right: 10px;
     background: #1b1b1b;
     border: none;
-    color: yellow; /* Dark "x" text color */
+    color: yellow;
     font-weight: bold;
-    font-size: 18px; /* Adjust button font size */
+    font-size: 18px;
     cursor: pointer;
-    border-radius: 50%; /* Circular close button */
-    width: 35px; /* Width of the button */
-    height: 35px; /* Height of the button */
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
     display: flex;
-    align-items: center; /* Align "x" text vertically */
-    justify-content: center; /* Align "x" text horizontally */
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease; /* Smooth fade-in and scaling effects */
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0; /* Hidden by default */
 }
 
-/* Button becomes visible when user hovers over the card */
 .photo-card-wrapper:hover .photo-card-close-btn {
-    opacity: 5; /* Makes the delete button visible */
+    opacity: 1; /* Visible on hover */
 }
 
-/* Delete button hover effect */
 .photo-card-close-btn:hover {
     background: black;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect on hover */
 }

@@ -41,10 +41,11 @@ const PhotoModal = ({ photoUrl, photoData, setSelectedPhotoUrl, updatePhotoData 
                                 </div>
                                 <input
                                     type="text"
-                                    className="form-control custom-input"
+                                    className="form-control custom-input cus-margin"
                                     placeholder="Add custom ingredient"
                                     value={customIngredient}
                                     onChange={(e) => setCustomIngredient(e.target.value)}
+                                    style={{ marginTop: '1rem' }} // Add margin-top directly here
                                 />
                                 <button
                                     className="btn btn-secondary mt-3 w-100"

@@ -1,46 +1,72 @@
-/* Container styling */
+/* Main container */
 .custom-upload-container {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
     /* min-height: 100vh; */
     padding: 20px;
-    background: transparent;
     font-family: 'Roboto', sans-serif;
+    overflow: hidden; /* Ensure particles stay within container */
+    z-index: 99;
 }
 
-/* Card styling */
+/* Particles flames background */
+#tsparticles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Push flames behind the card */
+}
+
+/* Upload card */
 .upload-card {
-    background: rgba(0, 0, 0, 0.8); /* Slightly transparent black background */
+    background: rgba(0, 0, 0, 0.85);
     border-radius: 16px;
     padding: 20px;
     max-width: 400px;
     width: 100%;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    animation: fadeIn 0.5s ease-in-out;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
     text-align: center;
     color: #fff;
+    z-index: 1; /* Bring card in front of particles */
+    animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Title styling */
+/* Card fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Upload title */
 .upload-title {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: bold;
     margin-bottom: 20px;
-    color: #e74c3c;
+    color: #ff6f61;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-/* Error message styling */
+/* Error message */
 .error-message {
-    background-color: #ffcccc;
-    color: #e74c3c;
+    background-color: rgba(255, 50, 50, 0.9);
+    color: #fff;
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 15px;
-    font-weight: 500;
+    font-weight: bold;
 }
 
-/* File input styling */
+/* File input */
 .file-input-wrapper {
     position: relative;
     margin-bottom: 15px;
@@ -58,25 +84,26 @@
 .file-label {
     display: block;
     padding: 12px;
-    background: #e74c3c;
+    background: linear-gradient(45deg, #ff5a4c, #c9413d);
     color: white;
-    border: 1px solid #e74c3c;
+    border: 1px solid transparent;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-weight: bold;
 }
 
 .file-label:hover {
-    background-color: #ff6f61;
-    transform: scale(1.02);
+    background: linear-gradient(45deg, #ff764a, #e64545);
+    transform: scale(1.05);
 }
 
-/* Image preview styling */
+/* Image preview */
 .preview-container {
     margin-bottom: 15px;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
 }
 
 .preview-image {
@@ -86,38 +113,27 @@
     border-radius: 8px;
 }
 
-/* Upload button styling */
+/* Upload button */
 .upload-button {
-    background: linear-gradient(to right, #ff6f61, #d9534f);
-    color: #fff;
+    background: linear-gradient(135deg, #ff4500, #ff6347);
+    color: white;
     border: none;
     padding: 10px 15px;
     border-radius: 12px;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
+    transition: background 0.3s ease, transform 0.3s ease;
 }
 
 .upload-button:hover {
-    background: linear-gradient(to right, #ff5a4c, #c9413d);
+    background: linear-gradient(135deg, #ff764a, #ff4500);
     transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(255, 100, 70, 0.8);
 }
 
 .upload-button.disabled {
     background: #ccc;
     cursor: not-allowed;
     transform: none;
-}
-
-/* Animation */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
