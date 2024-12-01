@@ -3,22 +3,23 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    /* background: linear-gradient(to right, #ff9a9e, #fad0c4); */
+    /* min-height: 100vh; */
     padding: 20px;
+    background: transparent;
     font-family: 'Roboto', sans-serif;
 }
 
 /* Card styling */
 .upload-card {
-    background-color: #fff;
+    background: rgba(0, 0, 0, 0.8); /* Slightly transparent black background */
     border-radius: 16px;
     padding: 20px;
     max-width: 400px;
     width: 100%;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     animation: fadeIn 0.5s ease-in-out;
     text-align: center;
+    color: #fff;
 }
 
 /* Title styling */
@@ -26,16 +27,17 @@
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 20px;
-    color: #333;
+    color: #e74c3c;
 }
 
 /* Error message styling */
 .error-message {
-    background-color: #ffdddd;
-    color: #d9534f;
+    background-color: #ffcccc;
+    color: #e74c3c;
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 15px;
+    font-weight: 500;
 }
 
 /* File input styling */
@@ -56,16 +58,16 @@
 .file-label {
     display: block;
     padding: 12px;
-    background-color: #f7f7f7;
-    color: #888;
-    border: 1px solid #ddd;
+    background: #e74c3c;
+    color: white;
+    border: 1px solid #e74c3c;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .file-label:hover {
-    background-color: #eee;
+    background-color: #ff6f61;
     transform: scale(1.02);
 }
 
@@ -74,7 +76,7 @@
     margin-bottom: 15px;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .preview-image {
@@ -82,23 +84,6 @@
     height: auto;
     display: block;
     border-radius: 8px;
-}
-
-/* Caption input styling */
-.caption-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    resize: none;
-    font-size: 1rem;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.caption-input:focus {
-    outline: none;
-    border-color: #ff9a9e;
 }
 
 /* Upload button styling */

@@ -1,68 +1,76 @@
-/* General navbar styles */
-.navbar-brand {
-    font-size: 1.75rem;
-    font-weight: bold;
-    letter-spacing: 1px;
+/* General Styling */
+.navbar-dark .navbar-nav .nav-link {
+    font-size: 1rem;
+    font-weight: 500;
 }
 
-.navbar-nav .nav-link {
-    color: white;
-    font-size: 1.2rem;
-    padding: 0.5rem 1rem;
-    transition: color 0.3s ease-in-out;
-}
-
-.navbar-nav .nav-link:hover,
-.navbar-nav .nav-link:focus {
-    color: red;
-    text-decoration: underline;
-}
-
-/* Navbar padding for desktop */
-.navbar {
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-}
-
-/* Navbar toggle icon for mobile */
-.navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%2872,72,72,1%29' stroke-width='2' linecap='round' linejoin='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-}
-
-/* Mobile responsive styles */
-@media (max-width: 992px) {
-    .navbar {
-        padding: 10px;
-        background-color: rgba(0, 0, 0, 0.9);
+/* Right Alignment for Desktop */
+@media (min-width: 992px) {
+    .navbar-nav {
+        justify-content: flex-end;
+        align-items: center;
     }
+}
 
+/* Profile Icon Alignment */
+.profile-animation {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border: 2px solid white;
+    transition: transform 0.3s, box-shadow 0.3s ease-in-out;
+}
+.nav-item.d-flex.align-items-center .nav-link {
+    line-height: 40px; /* Align text with the profile image */
+}
+
+/* Responsive Navbar */
+@media (max-width: 991px) {
     .navbar-nav {
         text-align: center;
-        background-color: rgba(0, 0, 0, 0.9);
     }
-
-    .navbar-toggler {
-        background-color: transparent;
+    .navbar-nav .nav-item {
+        margin-bottom: 0.5rem;
     }
-
-    .navbar-collapse {
-        background-color: rgba(0, 0, 0, 0.9);
-        padding: 1rem;
-        border-radius: 5px;
-    }
-
     .navbar-nav .nav-link {
-        padding: 0.8rem 0;
-        font-size: 1.3rem;
-        color: white;
-    }
-
-    .navbar-nav .nav-link:hover {
-        color: red;
+        padding: 0.5rem 0;
     }
 }
 
-/* Specific padding for navbar links */
-.navbar-nav .nav-link {
-    padding: 0.5rem 1rem;
+/* Animation Effects */
+.nav-animation {
+    transition: color 0.3s, transform 0.3s;
+}
+.nav-animation:hover {
+    color: #e74c3c !important;
+    transform: scale(1.1);
+}
+
+.logo-animation {
+    font-size: 1.8rem;
+    font-weight: bold;
+    transition: transform 0.4s ease, color 0.3s;
+}
+.logo-animation:hover {
+    transform: scale(1.2) rotate(10deg);
+    color: #ffffff !important;
+}
+
+.profile-animation:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Navbar Sticky */
+.animated-navbar {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+
+/* Sign Out Animation */
+.sign-out:hover {
+    color: #ffcc00 !important;
+    font-size: 1.1rem;
 }

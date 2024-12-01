@@ -6,7 +6,6 @@ import './CustomUpload.css';
 const CustomUpload = ({ onUploadComplete }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadPreview, setUploadPreview] = useState('');
-    const [caption, setCaption] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -52,7 +51,6 @@ const CustomUpload = ({ onUploadComplete }) => {
             if (onUploadComplete) onUploadComplete(response.data.photos);
             setSelectedFile(null);
             setUploadPreview('');
-            setCaption('');
         } catch (err) {
             console.error('Error uploading photo:', err.response?.data || err.message);
             setError(err.response?.data?.message || 'Failed to upload photo.');
@@ -87,12 +85,6 @@ const CustomUpload = ({ onUploadComplete }) => {
                         {selectedFile ? 'Change Photo' : 'Upload Photo'}
                     </label>
                 </div>
-                {/* <textarea
-                    className="caption-input"
-                    placeholder="Write a caption..."
-                    value={caption}
-                    onChange={(e) => setCaption(e.target.value)}
-                ></textarea> */}
                 <button
                     className={`upload-button ${loading ? 'disabled' : ''}`}
                     onClick={handleUpload}

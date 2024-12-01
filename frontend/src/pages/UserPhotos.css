@@ -1,5 +1,16 @@
+
 body.modal-open {
     overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background: black;
 }
 
 .modal.fade.show {
@@ -53,4 +64,20 @@ body.modal-open {
 .recipe-details pre {
     white-space: pre-wrap;
     word-wrap: break-word;
+}
+
+@media only screen and (max-width: 768px) {
+    .consistent-img {
+        height: auto;
+        width: 100%;
+    }
+
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .btn {
+        font-size: 14px;
+        padding: 10px;
+    }
 }
