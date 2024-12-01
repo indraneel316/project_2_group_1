@@ -13,6 +13,7 @@ const NavBar = () => {
         setUser(null);
         navigate('/signin');
         setShowBreadcrumbs(false); // Close dropdown after sign-out
+        sessionStorage.removeItem('authToken');
     };
 
     const toggleBreadcrumbs = () => {
@@ -56,11 +57,11 @@ const NavBar = () => {
                                 About
                             </Link>
                         </li>
-                        <li className="nav-item">
+                       { (sessionStorage.getItem('authToken') !== undefined && sessionStorage.getItem('authToken') !== null )&& <li className="nav-item">
                             <Link className="nav-link nav-animation" to="/product" onClick={handleLinkClick}>
                                 Dashboard
                             </Link>
-                        </li>
+                        </li>}
                         <li className="nav-item">
                             <Link className="nav-link nav-animation" to="/contact" onClick={handleLinkClick}>
                                 Contact
