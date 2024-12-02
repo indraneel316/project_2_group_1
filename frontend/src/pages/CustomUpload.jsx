@@ -69,15 +69,63 @@ const CustomUpload = ({ onUploadComplete }) => {
         <div className="custom-upload-container">
             {/* Fire effect background */}
             <Particles
-                id="tsparticles"
-                init={particlesInit}
-                options={{
-                    preset: "fire",
-                    background: {
-                        color: "transparent",
+    id="tsparticles"
+    init={particlesInit}
+    options={{
+        background: {
+            color: "#000000", // Black Background
+        },
+        particles: {
+            color: {
+                value: ["#ffffff", "#ffcc00", "#ff5500"], // Bright colors
+            },
+            number: {
+                value: 100, // Number of particles
+            },
+            links: {
+                enable: true, // Draw lines between particles
+                color: "#ffffff", // Link color
+                opacity: 0.4,
+            },
+            move: {
+                enable: true,
+                speed: 2, // Particle movement speed
+            },
+            size: {
+                value: { min: 2, max: 4 }, // Varying particle size
+            },
+            opacity: {
+                value: 0.8, // Some transparency
+            },
+            shape: {
+                type: "circle", // Circle-shaped particles
+            },
+        },
+        interactivity: {
+            events: {
+                onHover: {
+                    enable: true,
+                    mode: "grab", // Interaction mode: Grab lines between particles
+                },
+                onClick: {
+                    enable: true,
+                    mode: "push", // Add particles on click
+                },
+            },
+            modes: {
+                grab: {
+                    distance: 150,
+                    links: {
+                        opacity: 1,
                     },
-                }}
-            />
+                },
+                push: {
+                    quantity: 4,
+                },
+            },
+        },
+    }}
+/>
 
             <div className="upload-card">
                 <h4 className="upload-title">Get Your Recipe!</h4>
