@@ -1,6 +1,10 @@
 {
   "name": "frontend",
   "version": "0.1.0",
+  "engines": {
+    "node": "16.x",
+    "npm": "7.x"
+  },
   "private": true,
   "dependencies": {
     "@google-cloud/translate": "^8.5.0",
@@ -8,6 +12,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "ajv": "^6.12.6",
     "aos": "^2.3.4",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
@@ -35,6 +40,7 @@
     "webpack-cli": "^5.1.4"
   },
   "scripts": {
+    "preinstall": "npm install --legacy-peer-deps",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start": "react-scripts start",

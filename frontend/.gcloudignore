@@ -1,0 +1,12 @@
+node_modules/
+npm-debug.log
+package-lock.json
+.yarn/
+
+# IDE files
+
+.DS_Store
+
+# Testing and build-related files
+coverage/
+build/static/media/*.map
