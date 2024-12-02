@@ -54,7 +54,7 @@ const TabContent = ({
                 {activeTab === 'photo' && (
                     <div className="photoclass">
                         {selectedPhotoUrl ? (
-                            <div>
+                            <div className='cmh-parent'>
                                 <img
                                     src={selectedPhotoUrl}
                                     alt="Selected user photo"

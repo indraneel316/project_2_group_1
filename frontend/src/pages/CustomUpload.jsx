@@ -97,7 +97,7 @@ const CustomUpload = ({ onUploadComplete }) => {
             />
 
             <div className="upload-card">
-                <h4 className="upload-title">Post a Picture For Recipe Ideas :)</h4>
+                <h4 className="upload-title">Post a Picture For Recipe Ideas 😋</h4>
                 {error && <div className="error-message">{error}</div>}
 
                 {uploadPreview && (
