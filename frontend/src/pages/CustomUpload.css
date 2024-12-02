@@ -139,7 +139,7 @@
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
     .custom-upload-container {
-        padding: 10px; /* Smaller padding for compactness */
+        /* padding: 10px;  */
     }
 
     .upload-card {

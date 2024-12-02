@@ -75,7 +75,7 @@ body.modal-open {
     }
 
     .modal-dialog {
-        margin: 10px;
+        /* margin: 10px; */
     }
 
     .btn {
