@@ -9,7 +9,6 @@ import CustomUpload from './CustomUpload';
 import './UserPhotos.css';
 import RemoveConfirmationModal from "./RemoveConfirmationModal";
 
-
 const UserPhotos = () => {
     const { user } = useContext(UserContext);
     const [photos, setPhotos] = useState([]);
@@ -300,7 +299,7 @@ const UserPhotos = () => {
     const ingredients = selectedPhotoData.ingredients || [];
     const recipes = selectedPhotoData.recipes || [];
     const tabs = selectedPhotoData.tabs || ['photo'];
-    // const tabsnew = ['photo', 'analysis', 'recipe suggestions']
+    const tabsnew = ['photo', 'analysis', 'recipe suggestions']
 
     return (
         <div className="container">
