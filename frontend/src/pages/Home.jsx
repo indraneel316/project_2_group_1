@@ -12,13 +12,13 @@ const Home = () => {
                 <div className="text-center text-white">
                     <Fade top>
                         <h1 className="display-4 mb-4 text-danger">
-                            Discover Nutrition with Precision
+                            Your Personal Cooking Assistant
                         </h1>
                     </Fade>
                     <Fade delay={300}>
                         <p className="lead mb-5">
-                            Our cutting-edge app uses AI to recognize food and provides real-time nutritional
-                            information. Make smarter dietary choices instantly!
+                            Welcome to <strong>NutriNinja</strong>, your one-stop solution for a personalized culinary
+                            experience. Explore recipes tailored to your needs with advanced AI-driven insights.
                         </p>
                     </Fade>
                     <Zoom>
@@ -59,7 +59,7 @@ const Home = () => {
                                 <div className="modal-header">
                                     <Fade top>
                                         <h5 className="modal-title text-danger">
-                                            Unleash the Power of Nutrition
+                                            Key Features of NutriNinja
                                         </h5>
                                     </Fade>
                                     <button
@@ -83,34 +83,29 @@ const Home = () => {
                                 <div className="modal-body">
                                     <Fade bottom cascade>
                                         <p>
-                                            Discover how our innovative app transforms your food choices with precise
-                                            nutritional insights. Here’s what we offer:
+                                            NutriNinja redefines how you cook and eat. Here’s what we offer:
                                         </p>
                                         <ul>
                                             <li>
-                                                <strong>Smart Food Recognition:</strong> Instantly identify a variety of
-                                                foods using your smartphone camera.
+                                                <strong>Photo Access and Selection:</strong> Select food photos from
+                                                your Facebook account, use a public URL, or upload directly.
                                             </li>
                                             <li>
-                                                <strong>Nutritional Breakdown:</strong> Get detailed information on
-                                                calories, proteins, fats, carbs, and essential vitamins for every food
-                                                item.
+                                                <strong>Food Recognition:</strong> Powered by Google Vision API to
+                                                identify and label food items in your photos.
                                             </li>
                                             <li>
-                                                <strong>Personalized Nutrition:</strong> Receive tailored
-                                                recommendations based on your dietary goals and preferences.
+                                                <strong>Recipe Suggestions:</strong> Get personalized recommendations
+                                                through Spoonacular API based on identified food items.
                                             </li>
                                             <li>
-                                                <strong>Meal Logging Made Easy:</strong> Keep track of your meals
-                                                effortlessly with simple logging features.
-                                            </li>
-                                            <li>
-                                                <strong>Diet Compatibility:</strong> Support for various dietary
-                                                lifestyles, including vegan, keto, gluten-free, and more.
+                                                <strong>Interactive Recipe Exploration:</strong> View detailed recipes
+                                                with step-by-step cooking instructions.
                                             </li>
                                         </ul>
                                         <p>
-                                            Elevate your nutrition game and make informed choices effortlessly!
+                                            Join thousands of users in creating delicious meals and embracing a smarter,
+                                            more personalized culinary journey.
                                         </p>
                                     </Fade>
                                 </div>

@@ -185,7 +185,7 @@ const UserPhotos = () => {
                     customIngredient,
                 ],
             });
-            setCustomIngredient('');
+            setCustomIngredient(''); // Reset the input field after adding
         }
     };
 
@@ -302,6 +302,7 @@ const UserPhotos = () => {
 
     return (
         <div className="container">
+            <div id="div1" className='myindexing'>
             <h1 className="text-danger text-center mb-4">Review Your Food Photos</h1>
             {error && <div className="alert alert-danger">{error}</div>}
 
@@ -317,6 +318,7 @@ const UserPhotos = () => {
                 onClose={() => setShowRemoveConfirmation(false)}
                 onConfirm={removePhoto}
             />
+            </div>
 
             {/* Modal for Photo Details */}
             {selectedPhotoUrl && (
@@ -330,25 +332,27 @@ const UserPhotos = () => {
                             <div className="modal-body">
                                 <ModalTabs tabs={tabs} activeTab={activeTab} onChangeTab={setActiveTab} />
                                 <TabContent
-                                activeTab={activeTab}
-                                selectedPhotoUrl={selectedPhotoUrl}
-                                ingredients={ingredients}
-                                onAnalyze={handleAnalyze}
-                                loading={loading}
-                                onSave={handleSave}
-                                onAddIngredient ={handleAddIngredient}
-                                onRemoveIngredient={handleRemoveIngredient}
-                                onGetRecipeSuggestions={handleGetRecipeSuggestions}
-                                recipes={recipes}
-                                suggestedRecipes={suggestedRecipes}
-                                setSelectedRecipe={setSelectedRecipe}
-                                diet={diet}
-                                cuisine={cuisine}
-                                allergens={allergens}
-                                setDiet={setDiet}
-                                setCuisine={setCuisine}
-                                setAllergens={setAllergens}
-                                />
+                                    activeTab={activeTab}
+                                    selectedPhotoUrl={selectedPhotoUrl}
+                                    ingredients={ingredients}
+                                    customIngredient={customIngredient}
+                                    setCustomIngredient={setCustomIngredient}
+                                    onAddIngredient={handleAddIngredient}
+                                    onRemoveIngredient={handleRemoveIngredient}
+                                    onAnalyze={handleAnalyze}
+                                    loading={loading}
+                                    diet={diet}
+                                    cuisine={cuisine}
+                                    allergens={allergens}
+                                    setDiet={setDiet}
+                                    setCuisine={setCuisine}
+                                    setAllergens={setAllergens}
+                                    onGetRecipeSuggestions={handleGetRecipeSuggestions}
+                                    recipes={recipes}
+                                    onSave={handleSave}
+                                    setSelectedRecipe={setSelectedRecipe}
+                                    />
+
                             </div>
                         </div>
                     </div>

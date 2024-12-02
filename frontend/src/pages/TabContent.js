@@ -45,11 +45,11 @@ const TabContent = ({
             {/* Tab Content */}
             <div>
                 {activeTab === 'photo' && (
-                    <div>
+                    <div className='photoclass'>
                         <img
                             src={selectedPhotoUrl}
                             alt="Selected user photo"
-                            className="img-fluid mb-3 rounded"
+                            className="img-fluid mb-3 rounded cmh"
                         />
                         <button className="btn btn-danger w-100" onClick={onAnalyze}>
                             Analyze Photo
@@ -72,11 +72,12 @@ const TabContent = ({
                             value={customIngredient}
                             onChange={(e) => setCustomIngredient(e.target.value)}
                         />
+
                         <button
                             className="btn btn-secondary mt-2 w-100"
                             onClick={onAddIngredient}
                         >
-                            Add Ingredient
+                            Add Ingredientii
                         </button>
                         <hr />
                         <div className="row">
@@ -137,18 +138,18 @@ const TabContent = ({
                             </div>
                         ))}
                         <button
-                            className={`btn ${
-                                saveState === 'saved' ? 'btn-primary' : 'btn-success'
-                            } w-100 mt-3`}
+                            className={`btn ${saveState === 'saved' ? 'btn1' : 'btn2'
+                                } w-100 mt-3`}
                             onClick={handleSaveClick}
-                            disabled={saveState === 'saving'}
+                            disabled={saveState === 'saving' || saveState === 'saved'} // Disable during saving or saved state
                         >
                             {saveState === 'saving'
                                 ? 'Saving...'
                                 : saveState === 'saved'
-                                ? 'Saved!'
-                                : 'Save'}
+                                    ? 'Saved!'
+                                    : 'Save'}
                         </button>
+
                     </div>
                 )}
             </div>

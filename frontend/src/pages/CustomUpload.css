@@ -31,7 +31,7 @@
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
     text-align: center;
     color: #fff;
-    z-index: 1; /* Bring card in front of particles */
+    z-index: 101; /* Bring card in front of particles */
     animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -48,13 +48,13 @@
 }
 
 /* Upload title */
-.upload-title {
+/* .upload-title {
     font-size: 1.8rem;
     font-weight: bold;
     margin-bottom: 20px;
     color: #ff6f61;
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-}
+} */
 
 /* Error message */
 .error-message {
@@ -136,4 +136,31 @@
     background: #ccc;
     cursor: not-allowed;
     transform: none;
+}
+
+/* Upload title with transition effect */
+.upload-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #ff6f61;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    animation: glowPulse 3s infinite ease-in-out; /* Apply animation */
+    transition: transform 0.3s ease-in-out; /* Smooth scaling effect */
+}
+
+/* Hover effect for interactivity */
+.upload-title:hover {
+    transform: scale(1.1);
+    text-shadow: 0 4px 15px rgba(255, 110, 97, 0.8);
+}
+
+/* Glow pulse animation */
+@keyframes glowPulse {
+    0%, 100% {
+        text-shadow: 0 2px 5px rgba(255, 110, 97, 0.5), 0 0 20px rgba(255, 110, 97, 0.3);
+    }
+    50% {
+        text-shadow: 0 4px 15px rgba(255, 110, 97, 0.8), 0 0 40px rgba(255, 110, 97, 0.6);
+    }
 }

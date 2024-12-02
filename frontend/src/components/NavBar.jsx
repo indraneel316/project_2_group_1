@@ -67,11 +67,11 @@ const NavBar = () => {
                                 Contact
                             </Link>
                         </li>
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                             <Link className="nav-link nav-animation" to="/users" onClick={handleLinkClick}>
                                 Users
                             </Link>
-                        </li>
+                        </li> */}
                         {user ? (
                             <>
                                 <li className="nav-item">

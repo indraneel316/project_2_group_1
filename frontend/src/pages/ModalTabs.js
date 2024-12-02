@@ -6,6 +6,7 @@ const ModalTabs = ({ tabs, activeTab, onChangeTab }) => (
             <li className="nav-item" key={index}>
                 <button
                     className={`nav-link ${activeTab === tab ? 'active' : ''}`}
+                    style={{ color: '#dc3545' }} // Inline style for text color
                     onClick={() => onChangeTab(tab)}
                 >
                     {tab === 'photo' ? 'View Photo'
@@ -18,3 +19,4 @@ const ModalTabs = ({ tabs, activeTab, onChangeTab }) => (
 );
 
 export default ModalTabs;
+
