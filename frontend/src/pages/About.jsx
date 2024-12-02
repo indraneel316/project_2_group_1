@@ -52,7 +52,7 @@ const About = () => {
                         </li>
                         <li className="lead mb-4">
                             <span className="text-danger">Recipe Suggestions:</span> Get recipe recommendations through
-                            Spoonacular API based on identified food items.
+                            Open-ai API based on identified food items.
                         </li>
                         <li className="lead mb-4">
                             <span className="text-danger">Interactive Recipe Exploration:</span> View detailed recipes

@@ -96,7 +96,7 @@ const Home = () => {
                                             </li>
                                             <li>
                                                 <strong>Recipe Suggestions:</strong> Get personalized recommendations
-                                                through Spoonacular API based on identified food items.
+                                                through Open-ai API based on identified food items.
                                             </li>
                                             <li>
                                                 <strong>Interactive Recipe Exploration:</strong> View detailed recipes
