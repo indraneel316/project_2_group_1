@@ -299,12 +299,12 @@ const UserPhotos = () => {
     const ingredients = selectedPhotoData.ingredients || [];
     const recipes = selectedPhotoData.recipes || [];
     const tabs = selectedPhotoData.tabs || ['photo'];
-    const tabsnew = ['photo', 'analysis', 'recipe suggestions']
+    // const tabsnew = ['photo', 'analysis', 'recipe suggestions']
 
     return (
         <div className="container">
             <div id="div1" className='myindexing'>
-            <h1 className="text-danger text-center mb-4">Review Your Food Photos</h1>
+            <h1 className="text-white text-center mb-4">Review Your Food Photos</h1>
             {error && <div className="alert alert-danger">{error}</div>}
 
             {/* Photo Grid */}
@@ -331,7 +331,7 @@ const UserPhotos = () => {
                                 <button className="btn-close" onClick={handleCloseModal}></button>
                             </div>
                             <div className="modal-body">
-                                <ModalTabs tabsnew={tabsnew} activeTab={activeTab} onChangeTab={setActiveTab} />
+                                <ModalTabs tabsnew={tabs} activeTab={activeTab} onChangeTab={setActiveTab} />
                                 <TabContent
                                     activeTab={activeTab}
                                     selectedPhotoUrl={selectedPhotoUrl}

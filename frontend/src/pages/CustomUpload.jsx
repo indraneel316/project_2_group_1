@@ -1,66 +1,69 @@
-import React, { useContext, useState } from 'react';
-import axios from 'axios';
-import { UserContext } from '../context/userContext';
-import Particles from 'react-tsparticles';
-import { loadFirePreset } from 'tsparticles-preset-fire';
-import './CustomUpload.css';
+import React, { useContext, useState } from "react";
+import axios from "axios";
+import { UserContext } from "../context/userContext";
+import Particles from "react-tsparticles";
+import { loadFirePreset } from "tsparticles-preset-fire";
+import "./CustomUpload.css";
 
 const CustomUpload = ({ onUploadComplete }) => {
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [uploadPreview, setUploadPreview] = useState('');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null); // Stores selected file
+    const [uploadPreview, setUploadPreview] = useState(""); // Stores preview URL
+    const [error, setError] = useState(""); // Error message
+    const [loading, setLoading] = useState(false); // Upload status
 
     const { user } = useContext(UserContext);
 
+    // Handle file selection
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const validTypes = ['image/jpeg', 'image/png'];
+            const validTypes = ["image/jpeg", "image/png"]; // Allowed file types
             if (!validTypes.includes(file.type)) {
-                setError('Invalid file type. Please upload a JPEG or PNG image.');
+                setError("Invalid file type. Please upload a JPEG or PNG image.");
                 return;
             }
             if (file.size > 5 * 1024 * 1024) {
-                setError('File size exceeds 5MB. Please choose a smaller image.');
+                setError("File size exceeds 5MB. Please choose a smaller image.");
                 return;
             }
-            setSelectedFile(file);
-            setUploadPreview(URL.createObjectURL(file));
-            setError('');
+            setSelectedFile(file); // Store selected file
+            setUploadPreview(URL.createObjectURL(file)); // Create preview
+            setError(""); // Clear any previous errors
         }
     };
 
+    // Handle upload
     const handleUpload = async () => {
         if (!selectedFile) {
-            setError('Please select a photo');
+            setError("Please select a photo");
             return;
         }
 
         const formData = new FormData();
-        formData.append('photo', selectedFile);
+        formData.append("photo", selectedFile);
 
         setLoading(true);
-        setError('');
+        setError("");
 
         try {
             const response = await axios.put(
                 `http://localhost:5000/backend/api/users/add-photo/${user.email}`,
                 formData,
-                { headers: { 'Content-Type': 'multipart/form-data' } }
+                { headers: { "Content-Type": "multipart/form-data" } }
             );
 
             if (onUploadComplete) onUploadComplete(response.data.photos);
             setSelectedFile(null);
-            setUploadPreview('');
+            setUploadPreview("");
         } catch (err) {
-            console.error('Error uploading photo:', err.response?.data || err.message);
-            setError(err.response?.data?.message || 'Failed to upload photo.');
+            console.error("Error uploading photo:", err.response?.data || err.message);
+            setError(err.response?.data?.message || "Failed to upload photo.");
         } finally {
             setLoading(false);
         }
     };
 
+    // Particle background animation with Fire preset
     const particlesInit = async (engine) => {
         await loadFirePreset(engine);
     };
@@ -69,67 +72,34 @@ const CustomUpload = ({ onUploadComplete }) => {
         <div className="custom-upload-container">
             {/* Fire effect background */}
             <Particles
-    id="tsparticles"
-    init={particlesInit}
-    options={{
-        background: {
-            color: "#000000", // Black Background
-        },
-        particles: {
-            color: {
-                value: ["#ffffff", "#ffcc00", "#ff5500"], // Bright colors
-            },
-            number: {
-                value: 100, // Number of particles
-            },
-            links: {
-                enable: true, // Draw lines between particles
-                color: "#ffffff", // Link color
-                opacity: 0.4,
-            },
-            move: {
-                enable: true,
-                speed: 2, // Particle movement speed
-            },
-            size: {
-                value: { min: 2, max: 4 }, // Varying particle size
-            },
-            opacity: {
-                value: 0.8, // Some transparency
-            },
-            shape: {
-                type: "circle", // Circle-shaped particles
-            },
-        },
-        interactivity: {
-            events: {
-                onHover: {
-                    enable: true,
-                    mode: "grab", // Interaction mode: Grab lines between particles
-                },
-                onClick: {
-                    enable: true,
-                    mode: "push", // Add particles on click
-                },
-            },
-            modes: {
-                grab: {
-                    distance: 150,
-                    links: {
-                        opacity: 1,
+                id="tsparticles"
+                init={particlesInit}
+                options={{
+                    background: {
+                        color: "transparent",
                     },
-                },
-                push: {
-                    quantity: 4,
-                },
-            },
-        },
-    }}
-/>
+                    particles: {
+                        color: {
+                            value: ["#ffffff", "#ffcc00", "#ff5500"],
+                        },
+                        number: {
+                            value: 100,
+                        },
+                        move: {
+                            enable: true,
+                            speed: 2,
+                        },
+                        size: {
+                            value: { min: 2, max: 4 },
+                        },
+                    },
+                }}
+            />
 
             <div className="upload-card">
-                <h4 className="upload-title">Get Your Recipe!</h4>
+                <h4 className="upload-title">Post a Picture For Recipe Ideas :)</h4>
                 {error && <div className="error-message">{error}</div>}
+
                 {uploadPreview && (
                     <div className="preview-container">
                         <img
@@ -139,6 +109,8 @@ const CustomUpload = ({ onUploadComplete }) => {
                         />
                     </div>
                 )}
+
+                {/* File Input */}
                 <div className="file-input-wrapper">
                     <input
                         type="file"
@@ -148,19 +120,22 @@ const CustomUpload = ({ onUploadComplete }) => {
                         onChange={handleFileChange}
                     />
                     <label htmlFor="file-input" className="file-label">
-                        {selectedFile ? 'Change Photo' : 'Upload Photo'}
+                        {selectedFile ? "Change Photo" : "Upload Photo"}
                     </label>
                 </div>
-                <button
-                    className={`upload-button ${loading ? 'disabled' : ''}`}
-                    onClick={handleUpload}
-                    disabled={loading}
-                >
-                    {loading ? 'Uploading...' : 'Post'}
-                </button>
+
+                {selectedFile && (
+                    <button
+                        className={`upload-button ${loading ? "disabled" : ""}`}
+                        onClick={handleUpload}
+                        disabled={loading}
+                    >
+                        {loading ? "Uploading..." : "Post"}
+                    </button>
+                )}
             </div>
         </div>
     );
 };
 
-export default CustomUpload;
+export default CustomUpload;                
