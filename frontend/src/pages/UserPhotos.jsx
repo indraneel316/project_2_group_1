@@ -8,6 +8,7 @@ import RecipeDetailsModal from './RecipeDetailsModal';
 import CustomUpload from './CustomUpload';
 import './UserPhotos.css';
 import RemoveConfirmationModal from "./RemoveConfirmationModal";
+import {getApiUrl} from "../util/ApiUrl";
 
 const UserPhotos = () => {
     const { user } = useContext(UserContext);
@@ -35,7 +36,9 @@ const UserPhotos = () => {
                 return;
             }
             try {
-                const response = await axios.get('http://localhost:5000/backend/api/users/photos', {
+                const apiUrl = await getApiUrl();
+
+                const response = await axios.get(`${apiUrl}/api/users/photos`, {
                     params: { email: user.email },
                     headers: { Authorization: `Bearer ${user.token}` },
                 });
@@ -54,7 +57,9 @@ const UserPhotos = () => {
         const fetchSavedPhotoData = async () => {
             if (!user || !user.email) return;
             try {
-                const response = await axios.get('http://localhost:5000/backend/api/users/retrieve-results', {
+                const apiUrl = await getApiUrl();
+
+                const response = await axios.get(`${apiUrl}/api/users/retrieve-results`, {
                     params: { email: user.email },
                     headers: { Authorization: `Bearer ${user.token}` },
                 });
@@ -100,7 +105,9 @@ const UserPhotos = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/backend/api/users/save-results', {
+            const apiUrl = await getApiUrl();
+
+            const response = await axios.post(`${apiUrl}/api/users/save-results`, {
                 email: user.email,
                 photoData,
             }, {
@@ -263,9 +270,11 @@ const UserPhotos = () => {
 
     const removePhoto = async () => {
         try {
+            const apiUrl = await getApiUrl();
+
             if (!photoToRemoveUrl || !user?.email) return;
 
-            const response = await axios.delete(`http://localhost:5000/backend/api/users/remove-photo`, {
+            const response = await axios.delete(`${apiUrl}/api/users/remove-photo`, {
                 data: {
                     email: user.email,
                     photoUrl: photoToRemoveUrl,

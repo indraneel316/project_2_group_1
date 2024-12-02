@@ -4,6 +4,7 @@ import { UserContext } from "../context/userContext";
 import Particles from "react-tsparticles";
 import { loadFirePreset } from "tsparticles-preset-fire";
 import "./CustomUpload.css";
+import {getApiUrl} from "../util/ApiUrl";
 
 const CustomUpload = ({ onUploadComplete }) => {
     const [selectedFile, setSelectedFile] = useState(null); // Stores selected file
@@ -46,8 +47,10 @@ const CustomUpload = ({ onUploadComplete }) => {
         setError("");
 
         try {
+            const apiUrl = await getApiUrl();
+
             const response = await axios.put(
-                `http://localhost:5000/backend/api/users/add-photo/${user.email}`,
+                `${apiUrl}/api/users/add-photo/${user.email}`,
                 formData,
                 { headers: { "Content-Type": "multipart/form-data" } }
             );

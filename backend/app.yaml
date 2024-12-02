@@ -1,1 +1,8 @@
-runtime: nodejs20
+runtime: nodejs20  # Node.js runtime version (use the latest supported version)
+service: default # Name the service as "backend"
+instance_class: F2  # Choose the instance type (e.g., F1 for low cost, F2 for better performance)
+handlers:
+  # Route all `/backend/` prefixed requests to your backend service
+  - url: /backend/.*
+    secure: always              # Enforce HTTPS
+    script: auto                # Automatically route requests to Node.js app
