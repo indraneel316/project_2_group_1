@@ -9,6 +9,7 @@ import CustomUpload from './CustomUpload';
 import './UserPhotos.css';
 import RemoveConfirmationModal from "./RemoveConfirmationModal";
 
+
 const UserPhotos = () => {
     const { user } = useContext(UserContext);
     const [photos, setPhotos] = useState([]);
