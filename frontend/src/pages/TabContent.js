@@ -77,7 +77,7 @@ const TabContent = ({
                             className="btn btn-secondary mt-2 w-100"
                             onClick={onAddIngredient}
                         >
-                            Add Ingredientii
+                            Add Ingredient
                         </button>
                         <hr />
                         <div className="row">
@@ -128,10 +128,11 @@ const TabContent = ({
                 {activeTab === 'recipe suggestions' && (
                     <div className='cus-m'>
                         {recipes.map((recipe, index) => (
+                           recipe.title !== 'Unknown Title' &&
                             <div
                                 key={index}
                                 className="p-3 bg-danger text-white rounded mb-3"
-                                style={{ cursor: 'pointer' }}
+                                style={{ cursor:    'pointer' }}
                                 onClick={() => setSelectedRecipe(recipe)}
                             >
                                 <strong>{recipe.title}</strong>
