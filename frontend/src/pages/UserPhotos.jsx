@@ -298,7 +298,8 @@ const UserPhotos = () => {
     const selectedPhotoData = selectedPhotoUrl ? photoData[selectedPhotoUrl] || {} : {};
     const ingredients = selectedPhotoData.ingredients || [];
     const recipes = selectedPhotoData.recipes || [];
-    const tabs = ['photo', 'analysis', 'recipe suggestions']
+    const tabs = selectedPhotoData.tabs || ['photo'];
+    const tabsnew = ['photo', 'analysis', 'recipe suggestions']
 
     return (
         <div className="container">
@@ -330,7 +331,7 @@ const UserPhotos = () => {
                                 <button className="btn-close" onClick={handleCloseModal}></button>
                             </div>
                             <div className="modal-body">
-                                <ModalTabs tabs={tabs} activeTab={activeTab} onChangeTab={setActiveTab} />
+                                <ModalTabs tabsnew={tabsnew} activeTab={activeTab} onChangeTab={setActiveTab} />
                                 <TabContent
                                     activeTab={activeTab}
                                     selectedPhotoUrl={selectedPhotoUrl}

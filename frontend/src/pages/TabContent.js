@@ -5,7 +5,6 @@ import './TabContent.css';
 
 const TabContent = ({
     activeTab,
-    setActiveTab, // Allow parent to update the active tab
     selectedPhotoUrl,
     ingredients,
     customIngredient,
@@ -38,6 +37,14 @@ const TabContent = ({
         }
     };
 
+    // Helper function to check if all recipes have "No instructions available"
+    const areAllRecipesUnavailable = (recipes) => {
+        return recipes.every(
+            (recipe) =>
+                recipe.instructions === 'No instructions available'
+        );
+    };
+
     if (loading) return <LoadingSpinner text="Loading..." />;
 
     return (
@@ -45,15 +52,26 @@ const TabContent = ({
             {/* Tab Content */}
             <div>
                 {activeTab === 'photo' && (
-                    <div className='photoclass'>
-                        <img
-                            src={selectedPhotoUrl}
-                            alt="Selected user photo"
-                            className="img-fluid mb-3 rounded cmh"
-                        />
-                        <button className="btn btn-danger w-100" onClick={onAnalyze}>
-                            Analyze Photo
-                        </button>
+                    <div className="photoclass">
+                        {selectedPhotoUrl ? (
+                            <div>
+                                <img
+                                    src={selectedPhotoUrl}
+                                    alt="Selected user photo"
+                                    className="img-fluid mb-3 rounded cmh"
+                                />
+                                <button
+                                    className="btn btn-danger w-100"
+                                    onClick={onAnalyze}
+                                >
+                                    Analyze Photo
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="text-center">
+                                <p>No photo selected. Please select a photo to view.</p>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -70,9 +88,10 @@ const TabContent = ({
                             className="form-control cus-m"
                             placeholder="Add custom ingredient"
                             value={customIngredient}
-                            onChange={(e) => setCustomIngredient(e.target.value)}
+                            onChange={(e) =>
+                                setCustomIngredient(e.target.value)
+                            }
                         />
-
                         <button
                             className="btn btn-secondary mt-2 w-100"
                             onClick={onAddIngredient}
@@ -89,10 +108,16 @@ const TabContent = ({
                                     onChange={(e) => setDiet(e.target.value)}
                                 >
                                     <option value="">None</option>
-                                    <option value="vegetarian">Vegetarian</option>
+                                    <option value="vegetarian">
+                                        Vegetarian
+                                    </option>
                                     <option value="vegan">Vegan</option>
-                                    <option value="gluten free">Gluten Free</option>
-                                    <option value="ketogenic">Ketogenic</option>
+                                    <option value="gluten free">
+                                        Gluten Free
+                                    </option>
+                                    <option value="ketogenic">
+                                        Ketogenic
+                                    </option>
                                 </select>
                             </div>
                             <div className="col-md-4">
@@ -112,7 +137,9 @@ const TabContent = ({
                                     className="form-control"
                                     placeholder="Allergens"
                                     value={allergens}
-                                    onChange={(e) => setAllergens(e.target.value)}
+                                    onChange={(e) =>
+                                        setAllergens(e.target.value)
+                                    }
                                 />
                             </div>
                         </div>
@@ -126,31 +153,50 @@ const TabContent = ({
                 )}
 
                 {activeTab === 'recipe suggestions' && (
-                    <div className='cus-m'>
-                        {recipes.map((recipe, index) => (
-                           recipe.title !== 'Unknown Title' &&
-                            <div
-                                key={index}
-                                className="p-3 bg-danger text-white rounded mb-3"
-                                style={{ cursor:    'pointer' }}
-                                onClick={() => setSelectedRecipe(recipe)}
-                            >
-                                <strong>{recipe.title}</strong>
+                    <div className="cus-m">
+                        {recipes.length > 0 && !areAllRecipesUnavailable(recipes) ? (
+                            recipes.map(
+                                (recipe, index) =>
+                                    recipe.instructions !==
+                                        'No instructions available' && (
+                                        <div
+                                            key={index}
+                                            className="p-3 bg-danger text-white rounded mb-3"
+                                            style={{ cursor: 'pointer' }}
+                                            onClick={() =>
+                                                setSelectedRecipe(recipe)
+                                            }
+                                        >
+                                            <strong>{recipe.title}</strong>
+                                        </div>
+                                    )
+                            )
+                        ) : (
+                            <div className="text-center" >
+                                <p>No recipes available. Try analyzing a photo and adding ingredients.</p>
                             </div>
-                        ))}
-                        <button
-                            className={`btn ${saveState === 'saved' ? 'btn1' : 'btn2'
+                        )}
+
+                        {recipes.length > 0 && !areAllRecipesUnavailable(recipes) && (
+                            <button
+                                className={`btn ${
+                                    saveState === 'saved'
+                                        ? 'btn1'
+                                        : 'btn2'
                                 } w-100 mt-3`}
-                            onClick={handleSaveClick}
-                            disabled={saveState === 'saving' || saveState === 'saved'} // Disable during saving or saved state
-                        >
-                            {saveState === 'saving'
-                                ? 'Saving...'
-                                : saveState === 'saved'
+                                onClick={handleSaveClick}
+                                disabled={
+                                    saveState === 'saving' ||
+                                    saveState === 'saved'
+                                } // Disable during saving or saved state
+                            >
+                                {saveState === 'saving'
+                                    ? 'Saving...'
+                                    : saveState === 'saved'
                                     ? 'Saved!'
                                     : 'Save'}
-                        </button>
-
+                            </button>
+                        )}
                     </div>
                 )}
             </div>

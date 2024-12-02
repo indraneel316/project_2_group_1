@@ -1,12 +1,13 @@
 import React from 'react';
 
-const ModalTabs = ({ tabs, activeTab, onChangeTab }) => (
+const ModalTabs = ({ tabsnew, activeTab, onChangeTab }
+) => (
     <ul className="nav nav-tabs">
-        {tabs.map((tab, index) => (
+        {tabsnew.map((tab, index) => (
             <li className="nav-item" key={index}>
                 <button
                     className={`nav-link ${activeTab === tab ? 'active' : ''}`}
-                    style={{ color: '#dc3545' }} // Inline style for text color
+                    style={{ color: '#dc3545' }}
                     onClick={() => onChangeTab(tab)}
                 >
                     {tab === 'photo' ? 'View Photo'
