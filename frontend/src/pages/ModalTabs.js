@@ -7,7 +7,7 @@ const ModalTabs = ({ tabsnew, activeTab, onChangeTab }
             <li className="nav-item" key={index}>
                 <button
                     className={`nav-link ${activeTab === tab ? 'active' : ''}`}
-                    style={{ color: '#dc3545' }}
+                    style={{ color: '#e74c3c', fontWeight:"600" }}
                     onClick={() => onChangeTab(tab)}
                 >
                     {tab === 'photo' ? 'View Photo'

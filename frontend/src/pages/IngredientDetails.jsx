@@ -34,7 +34,7 @@ const IngredientDetails = ({ ingredients, onRemoveIngredient }) => {
                                     color: '#fff',
                                     fontSize: '0.8rem',
                                     fontWeight: 'bold',
-                                    background: '#dc3545',
+                                    background: '#e74c3c',
                                     borderRadius: '50%',
                                     width: '20px',
                                     height: '20px',

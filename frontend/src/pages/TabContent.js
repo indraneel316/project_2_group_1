@@ -161,7 +161,7 @@ const TabContent = ({
                                         'No instructions available' && (
                                         <div
                                             key={index}
-                                            className="p-3 bg-danger text-white rounded mb-3"
+                                            className="p-3 bg-danger-copy text-white rounded mb-3"
                                             style={{ cursor: 'pointer' }}
                                             onClick={() =>
                                                 setSelectedRecipe(recipe)
