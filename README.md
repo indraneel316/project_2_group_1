@@ -16,8 +16,8 @@
 ### **Test Credentials**
 The following credentials are provided for testing purposes:
 
-- **Email**: `testuser@sample.com`  
-- **Password**: `Test1234!`
+- **Email**: `nvidya121@gmail.com`  
+- **Password**: `Snowflake@1!`
 
 ### **Login Guide**
 1. **Log in to Facebook**:  
