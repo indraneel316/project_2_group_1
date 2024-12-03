@@ -1,148 +1,116 @@
-# Food Recognition App - User Signup and Profile Picture Update
+```markdown
+# NutriNinja
 
-## Overview
+## 1. Introduction
 
-The **Food Recognition App** allows users to sign up for an account and update their profile pictures. The application integrates with **AWS S3** for image storage, allowing users to upload and update their profile pictures securely and efficiently.
-
-## Features
-
-- **User Signup**: Users can register for an account using their email, username, and password.
-- **Profile Picture Upload**: Users can update their profile pictures, which are uploaded to **AWS S3** and associated with their account.
-
-## Technologies Used
-
-- **Frontend**: React.js, Bootstrap
-- **Backend**: Node.js (Express)
-- **Database**: MongoDB
-- **Containerization**: Docker (for deployment)
-- **Cloud Services**: AWS EC2 and AWS S3 for frontend hosting
+- **Application Name**: NutriNinja  
+- **Deployed Application URL**: [NutriNinja](https://frontend1-dot-nutrininja-443507.uw.r.appspot.com/)  
+- **Team Members**:  
+  - Tanu Priya - ki7085  
+  - Indraneel Parthasarathy - vo2786  
+  - Sri Vidya Rani Narala - oj1211  
 
 ---
 
-## API Documentation
+## 2. Test Credentials and Login Guide
 
-### POST `/auth/users/signup`
+### **Test Credentials**
+The following credentials are provided for testing purposes:
 
-- **Description**: Registers a new user and returns a JWT token.
-- **Request Body**:
-  - `username`: The user's username.
-  - `email`: The user's email address.
-  - `password`: The user's password.
+- **Email**: `testuser@sample.com`  
+- **Password**: `Test1234!`
 
-- **Response**:
-  - A success message and a JWT token.
+### **Login Guide**
+1. **Log in to Facebook**:  
+   - Open a new tab in your browser.  
+   - Navigate to [Facebook](https://www.facebook.com).  
+   - Click on the **Login** button.  
+   - Enter the provided test credentials and log in.
 
-### PUT `/profile`
+2. **Access the Website**:  
+   - Open a new tab and navigate to [NutriNinja](https://frontend1-dot-nutrininja-443507.uw.r.appspot.com/).
 
-- **Description**: Updates the user's profile picture by uploading an image to AWS S3.
-- **Request Body**:
-  - `profilePicture`: The image file (JPEG, PNG) sent using `multipart/form-data`.
+3. **Login with Facebook**:  
+   - Click on **Sign in** and then select the **Login with Facebook** button.  
+   - Follow the authentication prompts and grant any required permissions.
 
-- **Response**:
-  - A success message and the URL of the updated profile picture hosted on AWS S3.
+4. **Begin Testing**:  
+   - After authentication, you will be redirected to the NutriNinja dashboard. Proceed with testing the application features.
+
+> **Important**: Ensure that you are logged out of your personal Facebook account before using the test credentials.
 
 ---
 
-## Setting Up Locally
+## 3. Description
 
-### Prerequisites
+### NutriNinja: Your Personal Cooking Assistant
 
-Before running the app, ensure you have the following installed:
+#### Key Features
+1. **Photo Access and Selection**: Upload or select photos from your Facebook account.  
+2. **Food Recognition**: Analyze food photos using Google Vision API.  
+3. **Recipe Suggestions**: Generate personalized recipes using OpenAI's API.  
+4. **Interactive Recipe Exploration**: View step-by-step instructions and save favorite recipes.  
 
-- [Node.js](https://nodejs.org/) (v12 or higher)
-- [MongoDB](https://www.mongodb.com/)
-- [AWS Account](https://aws.amazon.com/) (for S3 access)
-- AWS S3 bucket created for storing profile pictures
+NutriNinja is designed to enhance the cooking experience for everyone, from beginners to seasoned chefs, with user-friendly features and advanced technology integration.
 
-### Environment Variables
+[Explore NutriNinja Now](https://frontend1-dot-nutrininja-443507.uw.r.appspot.com/)
 
-Create a `.env` file in the root directory and add the following variables:
+---
 
-# MongoDB
-MONGO_URI=<Your MongoDB URI>
+## 4. Commit History and Issue Board Evolution
 
-# JWT Secret
-JWT_SECRET=<Your JWT Secret>
+### **Commit History Screenshots**
+- Initial code setup:  
+  ![Commit Screenshot 1](https://github.com/user-attachments/assets/37a16a33-a29f-416f-81c7-f256536c3cb9)
+  
+- Added photo analysis feature:  
+  ![Commit Screenshot 2](https://github.com/user-attachments/assets/2c5fc89f-d78b-4fd4-a50f-bc9bc00af3ff)
+  
+- Final touches:  
+  ![Commit Screenshot 3](https://github.com/user-attachments/assets/beaa1afd-f3c6-47ee-8b37-4b0063d5c62b)
 
-# AWS S3 Configuration
-AWS_ACCESS_KEY_ID=<Your AWS Access Key ID>
-AWS_SECRET_ACCESS_KEY=<Your AWS Secret Access Key>
-AWS_REGION=<Your AWS Region>
-AWS_BUCKET_NAME=<Your S3 Bucket Name>
+---
+
+## 5. Major Code Files
+
+### Frontend Components
+- **[UserPhotos.jsx](https://github.com/indraneel316/project_2_group_1/blob/m2/frontend/src/pages/UserPhotos.jsx)**  
+- **[TabContent.js](https://github.com/indraneel316/project_2_group_1/blob/m2/frontend/src/pages/TabContent.js)**  
+
+### Backend Components
+- **[filterFoodPhotos.js](https://github.com/indraneel316/project_2_group_1/blob/m2/backend/middleware/filterFoodPhotos.js)**  
+- **[users.js](https://github.com/indraneel316/project_2_group_1/blob/m2/backend/routes/users.js)**  
+
+---
+
+## 6. System Overview
+
+NutriNinja combines a user-friendly frontend with a powerful backend to manage food photos and recipes seamlessly. The system integrates:
+- **Google Vision API** for image analysis.
+- **Firestore** for real-time data synchronization.
+- **AWS S3** for secure image storage.
+
+---
+
+## 7. Demonstration of Application Working
+
+**[YouTube Video Demonstration](https://youtu.be/example-link)**
+
+---
+
+## 8. Code Repository
+
+**[NutriNinja Code Repository](https://github.com/indraneel316/project_2_group_1/tree/m2)**
+
+---
+
+## 9. Analytics
+
+**[Download Analytics Report](Analytics.pdf)**
+
+---
+
+## 10. Contact Us
+
+For queries or contributions, reach out to the development team via the repository or through the **Contact Us** form in the application.
 ```
-
-### Installation
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/username/food-recognition-app.git
-   cd food-recognition-app
-   ```
-
-2. **Install dependencies**:
-   Install the required dependencies for both backend and frontend:
-   ```bash
-   npm install
-   ```
-
-3. **Run the MongoDB server**:
-   Ensure MongoDB is running either locally or using a cloud service like MongoDB Atlas.
-
-4. **Start the server**:
-   ```bash
-   npm start
-   ```
-
----
-
-## AWS S3 Integration for Profile Picture Upload
-
-### Setting Up S3 Bucket
-
-1. **Create an S3 Bucket**:
-   - Log in to your **AWS Management Console**.
-   - Navigate to **S3** and create a bucket. Set the appropriate region, and ensure that the bucket is public if you want the profile pictures to be accessible publicly.
-
-2. **Update the Bucket Policy**:
-   Allow public access to the bucket by configuring the correct **bucket policy**. Here’s an example policy:
-   ```json
-   {
-     "Version": "2012-10-17",
-     "Statement": [
-       {
-         "Sid": "PublicReadGetObject",
-         "Effect": "Allow",
-         "Principal": "*",
-         "Action": "s3:GetObject",
-         "Resource": "arn:aws:s3:::<Your-Bucket-Name>/*"
-       }
-     ]
-   }
-   ```
-
----
-
-## Usage
-
-1. **Sign Up**: Register a new account using the `/auth/users/signup` endpoint.
-2. **Update Profile Picture**: Use the `/profile` endpoint to upload a profile picture, which will be stored in AWS S3.
-
----
-
-## Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/YourFeature`).
-3. Make your changes and commit (`git commit -m 'Add feature'`).
-4. Push to the branch (`git push origin feature/YourFeature`).
-5. Create a pull request.
-
----
-
-## Contact
-
-For any questions or support, please contact:
-
-- **Email**: indraneel316@gmail.com
