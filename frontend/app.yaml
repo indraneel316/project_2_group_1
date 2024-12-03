@@ -1,17 +1,16 @@
-runtime: nodejs18
+runtime: custom
 instance_class: F2
-service: frontend
-env: standard
+service: frontend1
+env: flex
 
 handlers:
-  # Serve the main entry point (index.html) for your Single Page Application (SPA)
-  - url: /
+  # Serve all static files with their exact paths
+  - url: /static
+    static_dir: build/static
+
+  # Serve main entry point for all other paths
+  - url: /.*
     static_files: build/index.html
     upload: build/index.html
-
-  # Catch-all for serving static assets and other subroutes
-  - url: /(.*)
-    static_files: build/\1
-    upload: build/(.*)
 error_handlers:
   - file: build/index.html
