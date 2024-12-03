@@ -1,4 +1,3 @@
-```markdown
 # NutriNinja
 
 ## 1. Introduction
@@ -59,15 +58,10 @@ NutriNinja is designed to enhance the cooking experience for everyone, from begi
 
 ## 4. Commit History and Issue Board Evolution
 
-### **Commit History Screenshots**
-- Initial code setup:  
-  ![Commit Screenshot 1](https://github.com/user-attachments/assets/37a16a33-a29f-416f-81c7-f256536c3cb9)
-  
-- Added photo analysis feature:  
-  ![Commit Screenshot 2](https://github.com/user-attachments/assets/2c5fc89f-d78b-4fd4-a50f-bc9bc00af3ff)
-  
-- Final touches:  
-  ![Commit Screenshot 3](https://github.com/user-attachments/assets/beaa1afd-f3c6-47ee-8b37-4b0063d5c62b)
+The development process included several key stages:
+- Initial code setup with base functionalities.  
+- Implementation of photo analysis using Google Vision API.  
+- Final touches to the UI and deployment scripts.  
 
 ---
 
@@ -113,4 +107,3 @@ NutriNinja combines a user-friendly frontend with a powerful backend to manage f
 ## 10. Contact Us
 
 For queries or contributions, reach out to the development team via the repository or through the **Contact Us** form in the application.
-```
