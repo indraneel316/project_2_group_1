@@ -86,24 +86,7 @@ NutriNinja combines a user-friendly frontend with a powerful backend to manage f
 
 ---
 
-## 7. Demonstration of Application Working
-
-**[YouTube Video Demonstration](https://youtu.be/example-link)**
-
----
-
-## 8. Code Repository
-
 **[NutriNinja Code Repository](https://github.com/indraneel316/project_2_group_1/tree/m2)**
 
----
-
-## 9. Analytics
-
-**[Download Analytics Report](Analytics.pdf)**
-
----
-
-## 10. Contact Us
 
 For queries or contributions, reach out to the development team via the repository or through the **Contact Us** form in the application.
